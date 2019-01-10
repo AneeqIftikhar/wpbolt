@@ -203,6 +203,7 @@ function drMinifyContent($html){
 
 	if($dr_options->checked("lazyload")){
 		$html = $drImageOptimization->lazyLoadImages($html);
+		//$html = $drImageOptimization->lazyLoadBackgroundImages($html);
 	}	
 
 	return $html;

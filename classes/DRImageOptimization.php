@@ -13,6 +13,39 @@ class DRImageOptimization{
 	    return $matches;
 	}
 
+	public function lazyLoadBackgroundImages($html){
+		$regex = "([.#][a-zA-Z0-9_-]*?){[a-zA-Z0-9~;:#! _-]*\(['\"]?(http:.*?)['\"]?\)[a-zA-Z0-9~;:#! _-]*}";
+		preg_match_all( '/'.$regex.'/' , $html, $output );
+		$filtered = [];
+		if(sizeof($output)>0){
+			for($i=0; $i<sizeof($output[0]); $i++){
+				$str = str_replace($output[2][$i], '', $output[0][$i]);
+				$html = str_replace( $image[0][$i], $str, $html );
+			}
+		}
+		$lazyScript = '
+		<script>
+			var bgLazyLoadClasses = '.json_encode($output[1]).';
+			var bgLazyLoadImages = '.json_encode($output[2]).';
+			bg_refresh_handler = function(e) {
+	        var elements = document.querySelectorAll("*[data-bgsrc]");
+	        for (var i = 0; i < elements.length; i++) {
+	                var boundingClientRect = elements[i].getBoundingClientRect();
+	                if (elements[i].hasAttribute("data-bgsrc") && boundingClientRect.top < window.innerHeight) {
+	                    elements[i].setAttribute("src", elements[i].getAttribute("data-bgsrc"));
+	                    elements[i].removeAttribute("data-bgsrc");
+	                }
+	            }
+	        };
+
+	        window.addEventListener("scroll", bg_refresh_handler);
+	        window.addEventListener("load", bg_refresh_handler);
+	        window.addEventListener("resize", bg_refresh_handler);
+		</script>';
+		$html = str_replace( '</body>', $lazyScript.'</body>', $html );
+		return $html;
+	}
+
 	public function lazyloadImages($html){
 		$images = $this->getImages($html);
 		if($images){
@@ -49,6 +82,11 @@ class DRImageOptimization{
 		$html = str_replace( '</body>', $lazyScript.'</body>', $html );
 		return $html;
 	}
+
+	//(?:\(['"]?)(.*?)(?:['"]?\))
+	//[(.|#)][a-zA-Z0-9_-]*?\{.*?(?:\(['"]?)(.*?)(?:['"]?\))?.*?\}
+	//([.#][a-zA-Z0-9_-]*?){.*?\(['"]?(.*?)['"]?\).*?}?
+	//([.#][a-zA-Z0-9_-]*?){[a-zA-Z0-9 :!~#_-]*?\(['"]?(.*?)['"]?\)[a-zA-Z0-9 :!~#_-]*?}
 
 	public function specifyImageDimensions( $html ) {
 		preg_match_all( '/<img(?:[^>](?!(height|width)=))*+>/i' , $html, $images_match );		
