@@ -60,6 +60,7 @@ class DROptions{
 			'minify_styles' => 0,
 			'minify_scripts' => 0,
 			'combine_styles' => 0,
+			'defer_styles' => 0,
 			'combine_scripts' => 0,
 			'defer_scripts' => 0,
 			'remove_style_queries' => 0,

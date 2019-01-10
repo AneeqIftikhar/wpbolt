@@ -1,10 +1,17 @@
 <?php
 
-function clean_data_cache_again(){
-	$files = glob(DR_CACHE_PATH.'*'); // get all file names
+function clean_data_cache_again($path=""){
+	if($path==""){
+		$files = glob(DR_CACHE_PATH.'*'); // get all file names
+	}else{
+		$files = glob($path); // get all file names
+	}
 	foreach($files as $file){ // iterate files
-	  if(is_file($file))
+	  if(is_file($file)){
 	    unlink($file); // delete file
+	  }else if(is_dir($file)){
+	  	clean_data_cache_again($file."/*");
+	  }
 	}
 }
 // Launch hooks that deletes all the cache domain.

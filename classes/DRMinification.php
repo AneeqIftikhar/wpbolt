@@ -135,6 +135,17 @@ class DRMinification{
 	    return $matches;
 	}
 
+	public function getCSSMinifiedFiles($html) {
+	    $pattern = '<link.*href=.*development_style.*>';
+	    preg_match_all( '/' . $pattern . '/', $html, $matches, PREG_SET_ORDER );
+		if ( empty( $matches ) ) {
+			return false;
+		}
+
+	    return $matches;
+	}
+
+
 	public function getJSInline($html){
 		preg_match_all( '/<script.*<\/script>/Umsi', $html, $matches, PREG_SET_ORDER );
 
@@ -246,7 +257,7 @@ class DRMinification{
 		return $html; 	
 	}
 
-	public function minifyExternalCss($html){
+	public function minifyExternalCss($html, $combine=false, $defer=false){
 		$styles = $this->getCSSLinkedFiles( $html );
 		$minifier = null;
 		$minifiedContent = "";
@@ -255,9 +266,8 @@ class DRMinification{
 			$styles =  [];
 		}else{
 			foreach($styles as $style) {
-				if($this->getFileSize($style[2])>1024){
+				//if($this->getFileSize($style[2])>1024){
 					if ( preg_match( '/(?:-|\.)min.css/iU', $style[2] ) ) {
-
 				    	$noquery_link = explode('?', $style[2]);
 			    		$noquery_link = reset($noquery_link);
 			    		$html = str_replace( $style[2], $noquery_link, $html );
@@ -280,31 +290,57 @@ class DRMinification{
 					$i++;
 			    	
 			    	try{
-			       		$minifier = new Minify\CSS(@file_get_contents($style[2]));
-			       		$minifiedPathCSS = DR_PLUGIN_DIR.'/minified/css/'.DR_SLUG.'_style'.$i.'.min.css';
-						$minifiedContent=$minifier->minify();
-						
-						$fp = fopen($minifiedPathCSS, 'w');
-						fwrite($fp, $minifiedContent);
-						fclose($fp);
-						chmod($minifiedPathCSS, 0777); 
-						$minifiedPathCSS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/minified/css/'.DR_SLUG.'_style'.$i.'.min.css';
- 						$replace_style = str_replace( $style[2], $minifiedPathCSS, $style[0] );
-					    $replace_style = str_replace( '<style', '<style data-minify=1', $replace_style );
-					    $replace_style = str_replace( '>', 'defer>', $replace_style );
-					    $html = str_replace( $style[0], $replace_style, $html );
+			    		if($combine == false){
+				       		$minifier = new Minify\CSS(@file_get_contents($style[2]));
+				       		$minifiedPathCSS = DR_PLUGIN_DIR.'/cached/css/'.DR_SLUG.'_style_'.$i.'.min.css';
+							$minifiedContent=$minifier->minify();
+							
+							$fp = fopen($minifiedPathCSS, 'w');
+							fwrite($fp, $minifiedContent);
+							fclose($fp);
+							chmod($minifiedPathCSS, 0777); 
+							$minifiedPathCSS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/cached/css/'.DR_SLUG.'_style_'.$i.'.min.css';
+	 						$replace_style = str_replace( $style[2], $minifiedPathCSS, $style[0] );
+						    $replace_style = str_replace( '<style', '<style data-minify=1', $replace_style );
+						    $html = str_replace( $style[0], $replace_style, $html );
+						}else{
+							$minifier = new Minify\CSS(@file_get_contents($style[2]));
+							$minifiedContent.=$minifier->minify();
+							$html = str_replace( $style[0], '', $html );
+						}
 					}catch(Exception $e){
 						echo "Exception";
 					}
-				}else{
+				/*}else{
 	    			$smallCSS = @file_get_contents($style[2]);
 	    			$smallCSS = $this->drRemoveComments($smallCSS);
 	    			$html = str_replace( $style[0], '<style>'. $smallCSS .'</style>', $html );
-	    		}
+	    		}*/
 			}
+			if($combine){
+				$minifiedPathCSS = DR_PLUGIN_DIR.'/cached/css/'.DR_SLUG.'_style_major.min.css';
+				$fp = fopen($minifiedPathCSS, 'w');
+				fwrite($fp, $minifiedContent);
+				fclose($fp);
+				chmod($minifiedPathCSS, 0777); 
+				$minifiedPathCSS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/cached/css/'.DR_SLUG.'_style_major.min.css';
+				if($defer){
+					$lazyScript = "<script>document.addEventListener('DOMContentLoaded', function(event) {var link = document.createElement('link');link.media='all';link.type='text/css';link.rel = 'stylesheet';link.href = '".$minifiedPathCSS."';document.head.appendChild(link);});</script>";
+					$html = str_replace( '</body>', $lazyScript.'</body>', $html );
+				}else{
+			    	$html = str_replace( '</head>', '<link rel="stylesheet" href="'.$minifiedPathCSS.'" type="text/css" media="all"></head>', $html );
+				}
+			}
+
+			
+
 		}
 
 		return $html;
+	}
+
+	public function combineCss($html){
+
 	}
 
 	public function everythingInTags($string, $tagname){
@@ -373,13 +409,13 @@ class DRMinification{
 					try{
 
 			       		$minifier = new Minify\JS(@file_get_contents($script[2]));
-			       		$minifiedPathJS = DR_PLUGIN_DIR.'/minified/js/'.DR_SLUG.'_script'.$i.'.min.js';
+			       		$minifiedPathJS = DR_PLUGIN_DIR.'/cached/js/'.DR_SLUG.'_script'.$i.'.min.js';
 						$minifiedContent=$minifier->minify();
 						$fp = fopen($minifiedPathJS, 'w');
 						fwrite($fp, $minifiedContent);
 						fclose($fp);
 						chmod($minifiedPathJS, 0777); 
-						$minifiedPathJS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/minified/js/'.DR_SLUG.'_script'.$i.'.min.js';
+						$minifiedPathJS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/cached/js/'.DR_SLUG.'_script'.$i.'.min.js';
  						$replace_script = str_replace( $script[2], $minifiedPathJS, $script[0] );
 					    $replace_script = str_replace( '<script', '<script data-minify=1', $replace_script );
 					    $replace_script = str_replace( '>', ' defer>', $replace_script );

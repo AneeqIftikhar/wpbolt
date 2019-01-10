@@ -111,7 +111,12 @@ add_action( 'wp_ajax_dr_set_options', 'dr_set_options' );
 function drFooterScript(){
 	?>
 	<script>
-	    function postSettings(){    	
+	    function postSettings(){  
+	    	var dr_notice = document.getElementById("dr_notice");
+ 	    	dr_notice.style.display = "inherit";
+    		dr_notice.classList.remove("success");
+    		dr_notice.innerHTML = "Saving settings.";
+  	
 	    	var form = jQuery("#dr_settings_form")[0];
 	    	var data = {};
 	    	for(var i=0; i< form.length; i++){
@@ -165,12 +170,21 @@ function drMinifyContent($html){
 
 	if($dr_options->checked("minify_styles")){
 		$html = $drMinification->minifyInlineCss($html);
-		$html = $drMinification->minifyExternalCss($html);
+		$drCombineCss = false;
+		if($dr_options->checked("combine_styles")){
+			$drCombineCss = true;
+		}
+		$drDeferCss = false;
+		if($dr_options->checked("defer_styles")){
+			$drDeferCss = true;
+		}
+		$html = $drMinification->minifyExternalCss($html, $drCombineCss, $drDeferCss);
 	}
 
 	if($dr_options->checked("remove_style_queries")){
 		$html = $drMinification->removeQueriesCss($html);
 	}
+
 
 	if($dr_options->checked("minify_scripts")){
 		$html = $drMinification->minifyInlineJs($html);

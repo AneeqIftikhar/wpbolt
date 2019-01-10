@@ -18,14 +18,32 @@ class DRImageOptimization{
 		if($images){
 			foreach($images as $image) {
 				
-		    	$mod_img = str_replace('src=', 'class="lazyload" src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src=', $image[0]);
+		    	$mod_img = str_replace('src=', 'src="data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=" data-src=', $image[0]);
 		    	if(!is_ssl()){
 					$mod_img = str_replace('https', 'http', $mod_img);
 				}
 	    		$html = str_replace( $image[0], $mod_img, $html );
 			}
 		}
-		$lazyScript = "<script>[].forEach.call(document.querySelectorAll('img[data-src]'),function(img){img.setAttribute('src',img.getAttribute('data-src'));img.onload= function(){img.removeAttribute('data-src');};});</script><style>img{opacity: 1;transition: opacity 0.3s;} img[data-src]{opacity: 0;}</style>";
+		//$lazyScript = "<script>[].forEach.call(document.querySelectorAll('img[data-src]'),function(img){img.setAttribute('src',img.getAttribute('data-src'));img.onload= function(){img.removeAttribute('data-src');};});</script><style>img{opacity: 1;transition: opacity 0.3s;} img[data-src]{opacity: 0;}</style>";
+
+		$lazyScript = '
+		<script>
+			refresh_handler = function(e) {
+	        var elements = document.querySelectorAll("*[data-src]");
+	        for (var i = 0; i < elements.length; i++) {
+	                var boundingClientRect = elements[i].getBoundingClientRect();
+	                if (elements[i].hasAttribute("data-src") && boundingClientRect.top < window.innerHeight) {
+	                    elements[i].setAttribute("src", elements[i].getAttribute("data-src"));
+	                    elements[i].removeAttribute("data-src");
+	                }
+	            }
+	        };
+
+	        window.addEventListener("scroll", refresh_handler);
+	        window.addEventListener("load", refresh_handler);
+	        window.addEventListener("resize", refresh_handler);
+		</script>';
 
 		//$lazyScript = "<script>document.addEventListener('DOMContentLoaded', function(event) {lazyLoad()}); function lazyLoad(){[].forEach.call(document.querySelectorAll('img[data-src]'),function(img){img.setAttribute('src',img.getAttribute('data-src'));img.onload= function(){img.removeAttribute('data-src');};});}</style>";
 		$html = str_replace( '</body>', $lazyScript.'</body>', $html );

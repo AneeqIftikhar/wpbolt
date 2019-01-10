@@ -152,6 +152,11 @@ class DRAdminUI{
 							        	<td><input type="checkbox" name="combine_styles" value="1" <?php checked(1, $options['combine_styles'], true); ?>/></td>
 							        </tr>
 
+							        <tr valign="top">
+							        	<th scope="row">Defer style once combined</th>
+							        	<td><input type="checkbox" name="defer_styles" value="1" <?php checked(1, $options['defer_styles'], true); ?>/></td>
+							        </tr>
+
 							    	<tr>
 							    		<th valign="top" colspan="2">
 							    			<strong>Managing Scripts</strong>
