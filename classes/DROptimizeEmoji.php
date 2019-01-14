@@ -1,4 +1,5 @@
 <?php
+defined( 'ABSPATH' ) || die( 'Direct Access Not Allowed' );
 function drConvertEmoji( $text ) {
 	global $wp_smiliessearch;
 

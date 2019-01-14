@@ -1,5 +1,5 @@
 <?php
-
+defined( 'ABSPATH' ) || die( 'Direct Access Not Allowed' );
 function clean_data_cache_again($path=""){
 	if($path==""){
 		$files = glob(DR_CACHE_PATH.'*'); // get all file names

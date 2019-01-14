@@ -1,5 +1,5 @@
 <?php
-
+defined( 'ABSPATH' ) || die( 'Direct Access Not Allowed' );
 class DRFileSupport{
 
 	public static function devrec_get_home_path() {

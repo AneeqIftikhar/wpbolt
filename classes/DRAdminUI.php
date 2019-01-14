@@ -2,7 +2,7 @@
 /* 
 This class takes care of the admin UI 
 */
-
+defined( 'ABSPATH' ) || die( 'Direct Access Not Allowed' );
 class DRAdminUI{
 
 	public $tab = "cache";
@@ -139,43 +139,63 @@ class DRAdminUI{
 							    <table class="form-table">
 							    	<tr>
 							    		<th valign="top" colspan="2">
-							    			<strong>Managing CSS</strong>
+							    			<h3>Managing CSS</h3>
 							    		</th>
 							    	</tr>
 							    	<tr valign="top">
-							        	<th scope="row">Minify styles</th>
-							        	<td><input type="checkbox" name="minify_styles" value="1" <?php checked(1, $options['minify_styles'], true); ?>/></td>
+							        	<th scope="row">Minify inline CSS</th>
+							        	<td><input type="checkbox" name="minify_inline_css" value="1" <?php checked(1, $options['minify_inline_css'], true); ?>/></td>
+							        </tr>
+							    	<tr valign="top">
+							        	<th scope="row">Minify external CSS</th>
+							        	<td><input type="checkbox" name="minify_external_css" value="1" <?php checked(1, $options['minify_external_css'], true); ?>/></td>
 							        </tr>
 
 							        <tr valign="top">
-							        	<th scope="row">Combine styles</th>
-							        	<td><input type="checkbox" name="combine_styles" value="1" <?php checked(1, $options['combine_styles'], true); ?>/></td>
+							        	<th scope="row">Combine CSS</th>
+							        	<td><input type="checkbox" name="combine_css" value="1" <?php checked(1, $options['combine_css'], true); ?>/></td>
 							        </tr>
 
 							        <tr valign="top">
-							        	<th scope="row">Defer style once combined</th>
-							        	<td><input type="checkbox" name="defer_styles" value="1" <?php checked(1, $options['defer_styles'], true); ?>/></td>
+							        	<th scope="row">Defer CSS</th>
+							        	<td><input type="checkbox" name="defer_css" value="1" <?php checked(1, $options['defer_css'], true); ?>/></td>
 							        </tr>
+
+									<tr valign="top">
+										<th scope="row">Remove queries from CSS</th>
+										<td><input type="checkbox" name="remove_css_queries" value="1" <?php checked(1, $options['remove_css_queries'], true); ?>/></td>
+									</tr>
 
 							    	<tr>
 							    		<th valign="top" colspan="2">
-							    			<strong>Managing Scripts</strong>
+							    			<h3>Managing Javascript</h3>
 							    		</th>
 							    	</tr>
+
 							    	<tr valign="top">
-							        	<th scope="row">Minify scripts</th>
-							        	<td><input type="checkbox" name="minify_scripts" value="1" <?php checked(1, $options['minify_scripts'], true); ?>/></td>
+							        	<th scope="row">Minify inline JS</th>
+							        	<td><input type="checkbox" name="minify_iniline_js" value="1" <?php checked(1, $options['minify_iniline_js'], true); ?>/></td>
+							        </tr>
+
+							    	<tr valign="top">
+							        	<th scope="row">Minify external JS</th>
+							        	<td><input type="checkbox" name="minify_external_js" value="1" <?php checked(1, $options['minify_external_js'], true); ?>/></td>
 							        </tr>
 
 							        <tr valign="top">
-							        	<th scope="row">Combine scripts</th>
-							        	<td><input type="checkbox" name="combine_scripts" value="1" <?php checked(1, $options['combine_scripts'], true); ?>/></td>
+							        	<th scope="row">Combine JS files</th>
+							        	<td><input type="checkbox" name="combine_js" value="1" <?php checked(1, $options['combine_js'], true); ?>/></td>
 							        </tr>
 
 							        <tr valign="top">
-							        	<th scope="row">Defer scripts</th>
-							        	<td><input type="checkbox" name="defer_scripts" value="1" <?php checked(1, $options['defer_scripts'], true); ?>/></td>
+							        	<th scope="row">Defer JS</th>
+							        	<td><input type="checkbox" name="defer_js" value="1" <?php checked(1, $options['defer_js'], true); ?>/></td>
 							        </tr>
+
+									<tr valign="top">
+										<th scope="row">Remove queries from JS</th>
+										<td><input type="checkbox" name="remove_js_queries" value="1" <?php checked(1, $options['remove_js_queries'], true); ?>/></td>
+									</tr>
 							    </table>
 						    <?php
 						    	submit_button();  
@@ -186,7 +206,7 @@ class DRAdminUI{
 							    <table class="form-table">
 							    	<tr>
 							    		<th valign="top" colspan="2">
-							    			<strong>Managing Media</strong>
+							    			<h3>Managing Media</h3>
 							    		</th>
 							    	</tr>
 							    	<tr valign="top">
@@ -198,11 +218,6 @@ class DRAdminUI{
 							        	<th scope="row">Optimize images</th>
 							        	<td><input type="checkbox" name="optimize" value="1" <?php checked(1, $options['optimize'], true); ?>/></td>
 							        </tr>
-
-							    	<tr valign="top">
-							        	<th scope="row">Compress images</th>
-							        	<td><input type="checkbox" name="compress" value="1" <?php checked(1, $options['compress'], true); ?>/></td>
-							        </tr>
 							    </table>
 						    <?php
 						    	submit_button();  
@@ -213,7 +228,7 @@ class DRAdminUI{
 							    <table class="form-table">
 							    	<tr>
 							    		<th valign="top" colspan="2">
-							    			<strong>Managing Permissions</strong>
+							    			<h3>Managing Permissions</h3>
 							    		</th>
 							    	</tr>
 							    	<tr valign="top">

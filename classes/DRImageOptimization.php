@@ -1,5 +1,5 @@
 <?php
-
+defined( 'ABSPATH' ) || die( 'Direct Access Not Allowed' );
 class DRImageOptimization{
 
 	public function getImages($html){

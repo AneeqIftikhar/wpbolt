@@ -1,5 +1,5 @@
 <?php
-
+defined( 'ABSPATH' ) || die( 'Direct Access Not Allowed' );
 class Combine_Google_Fonts {
 
 	protected $fonts;

@@ -2,7 +2,7 @@
 /*
 This class takes care of the settings options
 */
-
+defined( 'ABSPATH' ) || die( 'Direct Access Not Allowed' );
 class DROptions{
 
 	public $options = [];
@@ -57,14 +57,18 @@ class DROptions{
 			'cache_web' => 0,
 			'cache_mobile' => 0,
 			'cache_logged_in' => 0,
-			'minify_styles' => 0,
-			'minify_scripts' => 0,
-			'combine_styles' => 0,
-			'defer_styles' => 0,
-			'combine_scripts' => 0,
-			'defer_scripts' => 0,
-			'remove_style_queries' => 0,
-			'remove_script_queries' => 0,
+			'minify_inline_css' => 0,
+			'minify_external_css' => 0,
+			'combine_css' => 0,
+			'defer_css' => 0,
+			'remove_css_queries' => 0,
+			'exclude_css'=>'',
+			'minify_inline_js' => 0,
+			'minify_external_js' => 0,
+			'combine_js' => 0,
+			'defer_js' => 0,
+			'remove_js_queries' => 0,
+			'exclude_js'=>'',
 			'lazyload' => 0,
 			'compress' => 0,
 			'optimize' => 0,

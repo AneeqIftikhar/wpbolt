@@ -1,5 +1,5 @@
 <?php
-
+defined( 'ABSPATH' ) || die( 'Direct Access Not Allowed' );
 class DRCacheControl{
 	public function drWPCacheDefine( $turn_it_on ) {
 		if ( ( $turn_it_on && defined( 'WP_CACHE' ) && WP_CACHE ) ) {
@@ -59,7 +59,7 @@ class DRCacheControl{
 	}
 
 	public function get_devrec_advanced_cache_file_content() {
-		$advanced_cache_file_local_path = DRFileSupport::devrec_get_home_path() . 'wp-content/plugins/'.DR_PLUGIN_DIR.'/library/advanced-cache.txt';
+		$advanced_cache_file_local_path = DRFileSupport::devrec_get_home_path() . 'wp-content/plugins/'.DR_SLUG.'/library/advanced-cache.txt';
 		$can_write = DRFileSupport::devrec_direct_filesystem()->is_writable($advanced_cache_file_local_path);
 		if($can_write){
 			$fileReader = DRFileSupport::devrec_direct_filesystem();
@@ -78,7 +78,8 @@ class DRCacheControl{
 	    if ( ! is_user_logged_in() ) {
 			$final_html_page = apply_filters('final_output', $final);
 			$is_html   = false;
-			if ( preg_match( '/(<\/html>)/i', $final_html_page ) ) {
+			echo $final_html_page;
+			/*if ( preg_match( '/(<\/html>)/i', $final_html_page ) ) {
 				$is_html = true;
 			}
 			if( $is_html ){
@@ -100,7 +101,7 @@ class DRCacheControl{
 				echo $final_html_page.$this->drFootprint(true, true);
 			}else{
 				echo $final;
-			}
+			}*/
 		}else{
 			echo $final;
 		}

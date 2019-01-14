@@ -1,5 +1,5 @@
 <?php
-
+defined( 'ABSPATH' ) || die( 'Direct Access Not Allowed' );
 class DRHtaccess{
 
 	public function buildHtAccess( $force = false ) {

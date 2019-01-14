@@ -1,7 +1,7 @@
 <?php
 /**
 
- * Plugin Name: WP Development
+ * Plugin Name: WP Bolt
 
  * Plugin URI: http://dev-rec.com/
 
@@ -18,24 +18,24 @@
  */
 
 
-defined( 'ABSPATH' ) || die( 'Not Allowed' );
+defined( 'ABSPATH' ) || die( 'Direct Access Not Allowed' );
 
-define( 'DR_SLUG', "development" );
-define( 'DR_NAME', "WPDevelopment" );
-define( 'DR_FRIENDLY_NAME', "WP Development" );
-define( 'DR_VERSION', "1.0.0.0" );
+define( 'DR_SLUG', "wp-bolt" );
+define( 'DR_NAME', "WP Bolt" );
+define( 'DR_FRIENDLY_NAME', "WP Bolt" );
+define( 'DR_VERSION', "1.0.0" );
 define( 'DR_PLUGIN_DIR', WP_CONTENT_DIR.'/plugins/'. DR_SLUG .'/' );
 define( 'DR_CACHE_PATH', DR_PLUGIN_DIR .'cached/' );
 
 
 
-include "classes/DRFileSupport.php";
-include "classes/DROptions.php";
-include "classes/DRAdminUI.php";
-include "classes/DRHTaccess.php";
-include "classes/DRCacheControl.php";
-include "classes/DRMinification.php";
-include "classes/DRImageOptimization.php";
+include_once "classes/DRFileSupport.php";
+include_once "classes/DROptions.php";
+include_once "classes/DRAdminUI.php";
+include_once "classes/DRHTaccess.php";
+include_once "classes/DRCacheControl.php";
+include_once "classes/DRMinification.php";
+include_once "classes/DRImageOptimization.php";
 
 
 
@@ -168,31 +168,48 @@ function drMinifyContent($html){
 	$drMinification = new DRMinification();
 	$html = $drMinification->drRemoveComments($html);
 
-	if($dr_options->checked("minify_styles")){
-		$html = $drMinification->minifyInlineCss($html);
-		$drCombineCss = false;
-		if($dr_options->checked("combine_styles")){
-			$drCombineCss = true;
-		}
+	if($dr_options->checked("combine_css")){
 		$drDeferCss = false;
-		if($dr_options->checked("defer_styles")){
+		if($dr_options->checked("defer_css")){
 			$drDeferCss = true;
 		}
-		$html = $drMinification->minifyExternalCss($html, $drCombineCss, $drDeferCss);
+		$drNoQueries = false;
+		if($dr_options->checked("remove_css_queries")){
+			$drNoQueries = true;;
+		}
+		$html = $drMinification->minifyAllCss($html, $drDeferCss, $drNoQueries);
+		return $html;
+	}else{
+		if($dr_options->checked("remove_css_queries")){
+			$html = $drMinification->removeQueriesCss($html);
+		}
+		if($dr_options->checked("minify_inline_css")){
+			$html = $drMinification->minifyInlineCss($html);
+		}
+		if($dr_options->checked("minify_external_css")){
+			$drCombineCss = false;
+			$drDeferCss = false;
+			if($dr_options->checked("defer_css")){
+				$drDeferCss = true;
+			}
+			$drNoQueries = false;
+			if($dr_options->checked("remove_css_queries")){
+				$drNoQueries = true;;
+			}
+			$html = $drMinification->minifyExternalCss($html, $drCombineCss, $drDeferCss, $drNoQueries);
+		}
 	}
 
-	if($dr_options->checked("remove_style_queries")){
-		$html = $drMinification->removeQueriesCss($html);
-	}
-
-
-	if($dr_options->checked("minify_scripts")){
-		$html = $drMinification->minifyInlineJs($html);
-		$html = $drMinification->minifyExternalJs($html);
-	}	
-
-	if($dr_options->checked("remove_script_queries")){
+	if($dr_options->checked("remove_js_queries")){
 		$html = $drMinification->removeQueriesJs($html);
+	}
+
+	if($dr_options->checked("minify_inline_js")){
+		$html = $drMinification->minifyInlineJs($html);
+	}
+
+	if($dr_options->checked("minify_external_js")){
+		$html = $drMinification->minifyExternalJs($html);
 	}
 
 	$drImageOptimization = new DRImageOptimization();
@@ -228,8 +245,8 @@ add_action('shutdown', function() {
 }, 0);
 
 
-include "classes/DROptimizeEmoji.php";
-include "classes/DROptimizeIFrame.php";
+include_once "classes/DROptimizeEmoji.php";
+include_once "classes/DROptimizeIFrame.php";
 
 
 

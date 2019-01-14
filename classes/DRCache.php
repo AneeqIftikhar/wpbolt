@@ -1,5 +1,5 @@
 <?php
-	defined( 'ABSPATH' ) || die( 'Not Allowed!' );
+	defined( 'ABSPATH' ) || die( 'Direct Access Not Allowed' );
 	$do_ignore = false;
 
 	if( strstr($_SERVER['REQUEST_URI'], 'robots.txt') || strstr($_SERVER['REQUEST_URI'], '.htaccess') ){
@@ -57,12 +57,8 @@
 
 	if(!$do_ignore){
 		$uri_path = fileName();
-		//if(wp_is_mobile()){
-		//	$devrec_cache_filepath = WP_CONTENT_DIR.'/plugins/development/cached/mobile_'.$uri_path.'.html';
-		//}else{
-			$devrec_cache_filepath = WP_CONTENT_DIR.'/plugins/development/cached/'.$uri_path.'.html';
-		//}
-		devrec_serve_cache_file( $devrec_cache_filepath );
+		//$devrec_cache_filepath = WP_CONTENT_DIR.'/plugins/wp-bolt/cached/'.$uri_path.'.html';
+		//devrec_serve_cache_file( $devrec_cache_filepath );
 	}
 	
 
