@@ -78,8 +78,7 @@ class DRCacheControl{
 	    if ( ! is_user_logged_in() ) {
 			$final_html_page = apply_filters('final_output', $final);
 			$is_html   = false;
-			echo $final_html_page;
-			/*if ( preg_match( '/(<\/html>)/i', $final_html_page ) ) {
+			if ( preg_match( '/(<\/html>)/i', $final_html_page ) ) {
 				$is_html = true;
 			}
 			if( $is_html ){
@@ -101,7 +100,7 @@ class DRCacheControl{
 				echo $final_html_page.$this->drFootprint(true, true);
 			}else{
 				echo $final;
-			}*/
+			}
 		}else{
 			echo $final;
 		}

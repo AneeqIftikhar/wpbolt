@@ -2,8 +2,6 @@
 defined( 'ABSPATH' ) || die( 'Direct Access Not Allowed' );
 
 use MatthiasMullie\Minify;
-include_once DR_PLUGIN_DIR."path-converter/src/ConverterInterface.php";
-include_once DR_PLUGIN_DIR."path-converter/src/Converter.php";
 include_once DR_PLUGIN_DIR."minify/src/Minify.php";
 include_once DR_PLUGIN_DIR."minify/src/Exception.php";
 include_once DR_PLUGIN_DIR."minify/src/Exceptions/BasicException.php";
@@ -12,6 +10,8 @@ include_once DR_PLUGIN_DIR."minify/src/Exceptions/IOException.php";
 include_once DR_PLUGIN_DIR."minify/src/CSS.php";
 include_once DR_PLUGIN_DIR."minify/src/JS.php";
 include_once DR_PLUGIN_DIR."classes/DRCombineFonts.php";
+include_once DR_PLUGIN_DIR."path-converter/src/ConverterInterface.php";
+include_once DR_PLUGIN_DIR."path-converter/src/Converter.php";
 
 class DRMinification{
 	public $excluded_files=[
@@ -455,14 +455,16 @@ class DRMinification{
 				}
 			}
 			$minifiedPathCSS = DR_PLUGIN_DIR.'/cached/css/'.DR_SLUG.'_style_major.min.css';
-			$minifier->minify($minifiedPathCSS); 
+			$minifiedContent = $minifier->minify($minifiedPathCSS); 
 			$minifiedPathCSS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/cached/css/'.DR_SLUG.'_style_major.min.css';
-			if($defer){
-				$lazyScript = "<script>document.addEventListener('DOMContentLoaded', function(event) {var link = document.createElement('link');link.media='all';link.type='text/css';link.rel = 'stylesheet';link.href = '".$minifiedPathCSS."';document.head.appendChild(link);});</script>";
-				$html = str_replace( '</body>', $lazyScript.'</body>', $html );
-			}else{
+			//if($defer){
+			//	$lazyScript = "<script>document.addEventListener('DOMContentLoaded', function(event) {var link = document.createElement('link');link.media='all';link.type='text/css';link.rel = 'stylesheet';link.href = '".$minifiedPathCSS."';document.head.appendChild(link);});</script>";
+			//	$html = str_replace( '</body>', $lazyScript.'</body>', $html );
+			//}else{
 				$html = str_replace( '</head>', '<link rel="stylesheet" href="'.$minifiedPathCSS.'" type="text/css" media="all"></head>', $html );
-			}
+			//}
+
+			//$html = str_replace( '</head>', '<style>'.$minifiedContent.'</style></head>', $html );
 		}
 		return $html;
 	}

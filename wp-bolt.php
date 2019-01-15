@@ -175,10 +175,9 @@ function drMinifyContent($html){
 		}
 		$drNoQueries = false;
 		if($dr_options->checked("remove_css_queries")){
-			$drNoQueries = true;;
+			$drNoQueries = true;
 		}
 		$html = $drMinification->minifyAllCss($html, $drDeferCss, $drNoQueries);
-		return $html;
 	}else{
 		if($dr_options->checked("remove_css_queries")){
 			$html = $drMinification->removeQueriesCss($html);

@@ -11,14 +11,9 @@ namespace MatthiasMullie\PathConverter;
  * @copyright Copyright (c) 2015, Matthias Mullie. All rights reserved
  * @license MIT License
  */
-interface ConverterInterface
-{
-    /**
-     * Convert file paths.
-     *
-     * @param string $path The path to be converted
-     *
-     * @return string The new path
-     */
-    public function convert($path);
+if (!interface_exists('ConverterInterface')) {
+    interface ConverterInterface
+    {
+        public function convert($path);
+    }
 }
