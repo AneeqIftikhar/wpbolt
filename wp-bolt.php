@@ -120,11 +120,15 @@ function drFooterScript(){
 	    	var form = jQuery("#dr_settings_form")[0];
 	    	var data = {};
 	    	for(var i=0; i< form.length; i++){
-	    		if(form[i].checked == true){
-	    			data[form[i].name] = 1;
-	    		}else{
-	    			data[form[i].name] = 0;
-	    		}
+				if(form[i].type=="checkbox"){
+					if(form[i].checked == true){
+						data[form[i].name] = 1;
+					}else{
+						data[form[i].name] = 0;
+					}
+				}else{
+					data[form[i].name] = form[i].value;
+				}
 	    	}
 	        data["action"] = 'dr_set_options';
 	        jQuery.post('<?php echo admin_url( 'admin-ajax.php' ); ?>', data, drResponse);        
@@ -182,9 +186,6 @@ function drMinifyContent($html){
 		if($dr_options->checked("remove_css_queries")){
 			$html = $drMinification->removeQueriesCss($html);
 		}
-		if($dr_options->checked("minify_inline_css")){
-			$html = $drMinification->minifyInlineCss($html);
-		}
 		if($dr_options->checked("minify_external_css")){
 			$drCombineCss = false;
 			$drDeferCss = false;
@@ -197,21 +198,24 @@ function drMinifyContent($html){
 			}
 			$html = $drMinification->minifyExternalCss($html, $drCombineCss, $drDeferCss, $drNoQueries);
 		}
+		if($dr_options->checked("minify_inline_css")){
+			$html = $drMinification->minifyInlineCss($html);
+		}
 	}
 
 	if($dr_options->checked("remove_js_queries")){
 		$html = $drMinification->removeQueriesJs($html);
 	}
 
-	if($dr_options->checked("minify_inline_js")){
-		$html = $drMinification->minifyInlineJs($html);
-	}
-
 	if($dr_options->checked("minify_external_js")){
 		$html = $drMinification->minifyExternalJs($html);
 	}
 
-	$drImageOptimization = new DRImageOptimization();
+	if($dr_options->checked("minify_inline_js")){
+		$html = $drMinification->minifyInlineJs($html);
+	}
+
+	$drImageOptimization = new DRImageOptimization($dr_options->options);
 	
 	if($dr_options->checked("optimize")){
 		$html = $drImageOptimization->specifyImageDimensions($html);
@@ -219,7 +223,10 @@ function drMinifyContent($html){
 
 	if($dr_options->checked("lazyload")){
 		$html = $drImageOptimization->lazyLoadImages($html);
-		//$html = $drImageOptimization->lazyLoadBackgroundImages($html);
+	}	
+
+	if($dr_options->checked("lazyload_bg")){
+		$html = $drImageOptimization->lazyLoadInTagBackgroundImages($html);
 	}	
 
 	return $html;

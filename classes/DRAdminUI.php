@@ -35,7 +35,6 @@ class DRAdminUI{
 	}
 
 	public function html($options){
-		
 		$currentTab = $this->tab;
 		?>
 			<?php
@@ -107,7 +106,8 @@ class DRAdminUI{
 					<div class="dr_nav">
 						<ul>
 							<li><a class="<?php echo $this->drActivelink('cache'); ?>" href="<?php echo $this->drTablink('cache'); ?>">Cache</a></li>
-							<li><a class="<?php echo $this->drActivelink('minify'); ?>" href="<?php echo $this->drTablink('minify'); ?>">Minification</a></li>
+							<li><a class="<?php echo $this->drActivelink('minify_css'); ?>" href="<?php echo $this->drTablink('minify_css'); ?>">Minify CSS</a></li>
+							<li><a class="<?php echo $this->drActivelink('minify_js'); ?>" href="<?php echo $this->drTablink('minify_js'); ?>">Minify JS</a></li>
 							<li><a class="<?php echo $this->drActivelink('images'); ?>" href="<?php echo $this->drTablink('images'); ?>">Images</a></li>
 							<li><a class="<?php echo $this->drActivelink('settings'); ?>" href="<?php echo $this->drTablink('settings'); ?>">Settings</a></li>
 							<li><a class="<?php echo $this->drActivelink('contact'); ?>" href="<?php echo $this->drTablink('contact'); ?>">Speed Up</a></li>
@@ -134,7 +134,7 @@ class DRAdminUI{
 						    <?php 
 						    	submit_button(); 
 								} 
-								if( $this->drTab() == "minify" ){
+								if( $this->drTab() == "minify_css" ){
 							?>
 							    <table class="form-table">
 							    	<tr>
@@ -165,7 +165,20 @@ class DRAdminUI{
 										<th scope="row">Remove queries from CSS</th>
 										<td><input type="checkbox" name="remove_css_queries" value="1" <?php checked(1, $options['remove_css_queries'], true); ?>/></td>
 									</tr>
-
+									<tr valign="top">
+										<th scope="row">Exclude following styles</th>
+										<td>
+											<p>Enter one file name per line. If the file url is (http://yourdomain.com/your/path/my_style.css) then enter <strong>my_style</strong></p>
+											<textarea type="textarea" name="exclude_css" cols="50" rows="5"><?php echo $options['exclude_css']; ?></textarea>
+										</td>
+									</tr>
+								</table>
+						    <?php 
+						    	submit_button(); 
+								} 
+								if( $this->drTab() == "minify_js" ){
+							?>
+							    <table class="form-table">
 							    	<tr>
 							    		<th valign="top" colspan="2">
 							    			<h3>Managing Javascript</h3>
@@ -196,6 +209,13 @@ class DRAdminUI{
 										<th scope="row">Remove queries from JS</th>
 										<td><input type="checkbox" name="remove_js_queries" value="1" <?php checked(1, $options['remove_js_queries'], true); ?>/></td>
 									</tr>
+									<tr valign="top">
+										<th scope="row">Exclude following scripts</th>
+										<td>
+											<p>Enter one file name per line. If the file url is (http://yourdomain.com/your/path/my_script.js) then enter <strong>my_script</strong></p>
+											<textarea type="textarea" name="exclude_js" cols="50" rows="5"><?php echo $options['exclude_js']; ?></textarea>
+										</td>
+									</tr>
 							    </table>
 						    <?php
 						    	submit_button();  
@@ -213,7 +233,17 @@ class DRAdminUI{
 							        	<th scope="row">Lazy Load Images</th>
 							        	<td><input type="checkbox" name="lazyload" value="1" <?php checked(1, $options['lazyload'], true); ?>/></td>
 							        </tr>
-
+							    	<tr valign="top">
+							        	<th scope="row">Lazy Load Background Images</th>
+							        	<td><input type="checkbox" name="lazyload_bg" value="1" <?php checked(1, $options['lazyload_bg'], true); ?>/></td>
+							        </tr>
+									<tr valign="top">
+										<th scope="row">Exclude images</th>
+										<td>
+											<p>Enter one image name per line. If the image url is (http://yourdomain.com/your/path/my_image.jpg) then enter <strong>my_image</strong></p>
+											<textarea type="textarea" name="exclude_image" cols="50" rows="5"><?php echo $options['exclude_image']; ?></textarea>
+										</td>
+									</tr>
 							        <tr valign="top">
 							        	<th scope="row">Optimize images</th>
 							        	<td><input type="checkbox" name="optimize" value="1" <?php checked(1, $options['optimize'], true); ?>/></td>

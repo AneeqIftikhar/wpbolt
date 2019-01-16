@@ -2,6 +2,12 @@
 defined( 'ABSPATH' ) || die( 'Direct Access Not Allowed' );
 class DRImageOptimization{
 
+	public $options = array();
+
+	public function __construct($options){
+		$this->options = explode(PHP_EOL, $options['exclude_image']);
+	}
+
 	public function getImages($html){
 		
 		$pattern = '<img.*>';
@@ -13,6 +19,69 @@ class DRImageOptimization{
 	    return $matches;
 	}
 
+	public function getInTagBgImages($html){
+		$pattern = '<[^>]*style=[\'"]?[^\'"]*(url\(([^\'" ]*)\)[\'"]?)[^>]*>';
+	    preg_match_all( '/' . $pattern . '/Umsi', $html, $matches, PREG_SET_ORDER );
+
+		if ( empty( $matches ) ) {
+			return false;
+		}
+	    return $matches;
+	}
+
+	public function fileName($url){
+		$path      = parse_url($url, PHP_URL_PATH);
+		$filename  = pathinfo($path, PATHINFO_FILENAME);
+		return $filename;
+	}
+
+	public function excludedImage($url){
+		$image = $this->fileName($url);
+		for($i=0; $i<sizeof($this->options); $i++){
+			if($image == $this->options[$i]){
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+
+	public function lazyLoadInTagBackgroundImages($html){
+		$elements = $this->getInTagBgImages($html);
+		if($elements){
+			foreach($elements as $element) {
+				$url = str_replace('&quot;', '', $element[2]);
+				if($this->excludedImage($url)){
+					continue;
+				}
+		    	$mod_elem = str_replace($element[1], 'url(data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs=)', $element[0]);
+				$mod_elem = str_replace("style", 'data-itbgurl="'.$url.'" style', $mod_elem);
+	    		$html = str_replace( $element[0], $mod_elem, $html );
+			}
+		}
+		$lazyScript = '
+		<script>
+			itbg_refresh_handler = function(e) {
+	        var itbg_elements = document.querySelectorAll("*[data-itbgurl]");
+	        for (var i = 0; i < itbg_elements.length; i++) {
+	                var boundingClientRect = itbg_elements[i].getBoundingClientRect();
+	                if (itbg_elements[i].hasAttribute("data-itbgurl") && boundingClientRect.top < window.innerHeight) {
+						itbg_elements[i].style.backgroundImage = "url("+ itbg_elements[i].getAttribute("data-itbgurl") +")"
+	                    itbg_elements[i].removeAttribute("data-itbgurl");
+	                }
+	            }
+	        };
+
+	        window.addEventListener("scroll", itbg_refresh_handler);
+	        window.addEventListener("load", itbg_refresh_handler);
+	        window.addEventListener("resize", itbg_refresh_handler);
+		</script>';
+
+		//$lazyScript = "<script>document.addEventListener('DOMContentLoaded', function(event) {lazyLoad()}); function lazyLoad(){[].forEach.call(document.querySelectorAll('img[data-src]'),function(img){img.setAttribute('src',img.getAttribute('data-src'));img.onload= function(){img.removeAttribute('data-src');};});}</style>";
+		$html = str_replace( '</body>', $lazyScript.'</body>', $html );
+		return $html;
+	}
 	public function lazyLoadBackgroundImages($html){
 		$regex = "([.#][a-zA-Z0-9_-]*?){[a-zA-Z0-9~;:#! _-]*\(['\"]?(http:.*?)['\"]?\)[a-zA-Z0-9~;:#! _-]*}";
 		preg_match_all( '/'.$regex.'/' , $html, $output );

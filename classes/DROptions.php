@@ -70,6 +70,8 @@ class DROptions{
 			'remove_js_queries' => 0,
 			'exclude_js'=>'',
 			'lazyload' => 0,
+			'lazyload_bg' => 0,
+			'exclude_image'=>'',
 			'compress' => 0,
 			'optimize' => 0,
 			'newsletter' => 0,

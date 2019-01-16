@@ -145,7 +145,7 @@ class Converter implements ConverterInterface
         if (strpos($path, '/') === 0) {
             return $path;
         }
-
+        
         $dr_content_path = explode('wp-content', $this->from."/myfile.css");
         if(sizeof($dr_content_path)>1){
             $dr_to_path = WP_CONTENT_URL . $dr_content_path[1];
