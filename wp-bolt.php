@@ -203,16 +203,29 @@ function drMinifyContent($html){
 		}
 	}
 
-	if($dr_options->checked("remove_js_queries")){
-		$html = $drMinification->removeQueriesJs($html);
-	}
+	if($dr_options->checked("combine_js")){
+		$drDeferJs = false;
+		if($dr_options->checked("defer_js")){
+			$drDeferJs = true;
+		}
+		$drNoQueries = false;
+		if($dr_options->checked("remove_js_queries")){
+			$drNoQueries = true;
+		}
+		$html = $drMinification->minifyAllJs($html, $drDeferJs, $drNoQueries);
+	}else{
 
-	if($dr_options->checked("minify_external_js")){
-		$html = $drMinification->minifyExternalJs($html);
-	}
+		if($dr_options->checked("remove_js_queries")){
+			$html = $drMinification->removeQueriesJs($html);
+		}
 
-	if($dr_options->checked("minify_inline_js")){
-		$html = $drMinification->minifyInlineJs($html);
+		if($dr_options->checked("minify_external_js")){
+			$html = $drMinification->minifyExternalJs($html);
+		}
+
+		if($dr_options->checked("minify_inline_js")){
+			$html = $drMinification->minifyInlineJs($html);
+		}
 	}
 
 	$drImageOptimization = new DRImageOptimization($dr_options->options);

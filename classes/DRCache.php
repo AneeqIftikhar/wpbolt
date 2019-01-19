@@ -57,8 +57,8 @@
 
 	if(!$do_ignore){
 		$uri_path = fileName();
-		//$devrec_cache_filepath = WP_CONTENT_DIR.'/plugins/wp-bolt/cached/'.$uri_path.'.html';
-		//devrec_serve_cache_file( $devrec_cache_filepath );
+		$devrec_cache_filepath = WP_CONTENT_DIR.'/plugins/wp-bolt/cached/'.$uri_path.'.html';
+		devrec_serve_cache_file( $devrec_cache_filepath );
 	}
 	
 

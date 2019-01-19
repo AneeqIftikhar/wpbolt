@@ -145,6 +145,16 @@ class DRMinification{
 	    return $matches;
 	}
 
+	public function getAllJs($html){
+		$pattern = '<script(?:(?!src=).)*?>(.*?)<\/script>|<script\s+[^>]+[\s\'"]?src\s*=\s*[\'"]\s*?([^\'"]+\.js(?:\?[^\'"]*)?)\s*?[\'"]([^>]+)?\/?>';
+		preg_match_all( '/' . $pattern . '/smix', $html, $matches, PREG_SET_ORDER );
+
+		if ( empty( $matches ) ) {
+			return false;
+		}
+	    return $matches;
+	}
+
 	public function getCSSMinifiedFiles($html) {
 	    $pattern = '<link.*href=.*development_style.*>';
 	    preg_match_all( '/' . $pattern . '/', $html, $matches, PREG_SET_ORDER );
@@ -537,6 +547,88 @@ class DRMinification{
 			@file_put_contents($target, $mincontent);
 			$minifiedPathJS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/cached/js/'.DR_SLUG.'_script_0.min.js';
 			$html = str_replace( '</body>', '<script data-minify=1 type="text/javascript" src="'.$minifiedPathJS.'" defer></script></body>', $html );
+		}
+		return $html;
+	}
+
+	public function minifyAllJs($html, $defer=false, $noquery = false){
+		if($noquery){
+			$html = $this->removeQueriesJs($html);
+		}
+		$scripts = $this->getAllJs( $html );
+		$minifier = null;
+		$minifiedContent = "";
+		$i=0;
+		if(!$scripts){
+			$scripts =  [];
+		}else{
+			foreach($scripts as $script) {
+				$i++;
+				$skip = false;
+				try{
+					if($minifier == null){
+						if(strlen($script[1])>0){
+							$minifier = new Minify\CSS($script[1]);
+						}else{
+							if($this->isLocalFile($script[2])){
+								$minifier = new Minify\CSS($script[2]);
+							}else if(!$this->isLocalUrl($script[2])){
+								if(DrFileSupport::get_http_response_code($script[2])=="200"){
+									$minifier = new Minify\CSS(@file_get_contents($script[2]));
+								}
+							}else if($this->isLocalUrl($script[1])){
+								$minifier = new Minify\CSS($this->urlToDirectory($script[2]));
+							}
+						}
+					}else{
+						if(strlen($script[1])>0){
+							$minifier->add($script[1]);
+						}else{
+							
+							if ( preg_match( '/(?:-|\.)min.css/iU', $script[2] ) ) {
+								$skip = true;
+							}
+
+							if($skip){
+								if($noquery){
+									$noquery_link = explode('?', $script[2]);
+									$noquery_link = reset($noquery_link);
+								}else{
+									$noquery_link = $script[2];
+								}
+								$html = str_replace( $script[2], $noquery_link, $html );
+								continue;
+							}else{
+								if($this->isLocalFile($script[2])){
+									$minifier->add($script[2]);
+								}else if(!$this->isLocalUrl($script[2])){
+									if(DrFileSupport::get_http_response_code($script[2])=="200"){
+										$minifier->add(@file_get_contents($script[2]));
+									}
+								}else{ if($this->isLocalUrl($script[2]))
+									$minifier->add($this->urlToDirectory($script[2]));
+								}
+							}
+						}
+					}
+					if(!$skip){
+						$html = str_replace( $script[0], '', $html );
+					}
+				}catch(Exception $e){
+					echo "Exception";
+				}
+			}
+			$minifiedPathJS = DR_PLUGIN_DIR.'/cached/js/'.DR_SLUG.'_script_major.min.js';
+			$minifiedContent = $minifier->minify($minifiedPathJS); 
+			$minifiedPathJS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/cached/js/'.DR_SLUG.'_script_major.min.js';
+			//if($defer){
+			//	$lazyScript = "<script>document.addEventListener('DOMContentLoaded', function(event) {var link = document.createElement('link');link.media='all';link.type='text/css';link.rel = 'stylesheet';link.href = '".$minifiedPathCSS."';document.head.appendChild(link);});</script>";
+			//	$html = str_replace( '</body>', $lazyScript.'</body>', $html );
+			//}else{
+				$html = str_replace( '</body>', '<script data-minify=1 type="text/javascript" src="'.$minifiedPathJS.'" defer></script></body>', $html );
+			//}
+
+			//$html = str_replace( '</head>', '<style>'.$minifiedContent.'</style></head>', $html );
 		}
 		return $html;
 	}
