@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+	
+	
+		<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+	
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Log In &lsaquo; Aleem Khan &#8212; WordPress</title>
+	<link rel='dns-prefetch' href='//s.w.org' />
+
+
+
+
+
+	<meta name='robots' content='noindex,noarchive' />
+	<meta name='referrer' content='strict-origin-when-cross-origin' />
+		<meta name="viewport" content="width=device-width" />
+			
+			<link rel="stylesheet" href="http://localhost/wordpress/wp-content/plugins/wp-bolt/cached/css/wp-bolt_style_major.min.css" type="text/css" media="all"></head>
+	<body class="login login-action-login wp-core-ui interim-login  locale-en-us">
+		<div id="login">
+		<h1><a href="https://wordpress.org/" title="Powered by WordPress" tabindex="-1">Powered by WordPress</a></h1>
+	<p class="message">	Your session has expired. Please log in to continue where you left off.<br />
+</p>
+
+<form name="loginform" id="loginform" action="http://localhost/wordpress/wp-login.php" method="post">
+	<p>
+		<label for="user_login">Username or Email Address<br />
+		<input type="text" name="log" id="user_login" aria-describedby="login_error" class="input" value="" size="20" /></label>
+	</p>
+	<p>
+		<label for="user_pass">Password<br />
+		<input type="password" name="pwd" id="user_pass" aria-describedby="login_error" class="input" value="" size="20" /></label>
+	</p>
+		<p class="forgetmenot"><label for="rememberme"><input name="rememberme" type="checkbox" id="rememberme" value="forever"  /> Remember Me</label></p>
+	<p class="submit">
+		<input type="submit" name="wp-submit" id="wp-submit" class="button button-primary button-large" value="Log In" />
+		<input type="hidden" name="interim-login" value="1" />
+		<input type="hidden" name="testcookie" value="1" />
+	</p>
+</form>
+
+
+<script type="text/javascript">
+function wp_attempt_focus(){
+setTimeout( function(){ try{
+d = document.getElementById('user_login');
+d.focus();
+d.select();
+} catch(e){}
+}, 200);
+}
+
+wp_attempt_focus();
+if(typeof wpOnload=='function')wpOnload();
+(function(){
+try {
+	var i, links = document.getElementsByTagName('a');
+	for ( i in links ) {
+		if ( links[i].href )
+			links[i].target = '_blank';
+	}
+} catch(e){}
+}());
+</script>
+
+
+	</div>
+
+	
+		<div class="clear"></div>
+	
+		<script>
+			refresh_handler = function(e) {
+	        var elements = document.querySelectorAll("*[data-src]");
+	        for (var i = 0; i < elements.length; i++) {
+	                var boundingClientRect = elements[i].getBoundingClientRect();
+	                if (elements[i].hasAttribute("data-src") && boundingClientRect.top < window.innerHeight) {
+	                    elements[i].setAttribute("src", elements[i].getAttribute("data-src"));
+	                    elements[i].removeAttribute("data-src");
+	                }
+	            }
+	        };
+
+	        window.addEventListener("scroll", refresh_handler);
+	        window.addEventListener("load", refresh_handler);
+	        window.addEventListener("resize", refresh_handler);
+		</script></body>
+	</html>
+	

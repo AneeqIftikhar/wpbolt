@@ -395,7 +395,7 @@ class DRMinification{
 							$minifier->add($style[1]);
 						}else{
 							
-							if ( preg_match( '/(?:-|\.)min.css/iU', $content ) ) {
+							if ( preg_match( '/(?:-|\.)min.css/iU', $style[2] ) ) {
 								$skip = true;
 							}
 
