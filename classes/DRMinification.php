@@ -247,7 +247,7 @@ class DRMinification{
 
 	public function isLocalFile($url){
 		$parsed = parse_url($url);
-        if ( isset($parsed['host']) ||isset($parsed['query']) ) {
+        if ( isset($parsed['host']) || isset($parsed['query']) ) {
 			return false;
         }
 
@@ -255,6 +255,8 @@ class DRMinification{
 	}
 
 	public function isLocalUrl($url){
+		$url = explode("?",$url)[0];
+		$url = explode("#",$url)[0];
 		$parsed = parse_url($url);
         if ( isset($parsed['host']) || isset($parsed['query']) ) {
 			$local = parse_url(get_site_url());
@@ -269,6 +271,8 @@ class DRMinification{
 	}
 
 	public function urlToDirectory($url){
+		$url = explode("?",$url)[0];
+		$url = explode("#",$url)[0];
 		$parsed = parse_url($url);
         if ( isset($parsed['host']) || isset($parsed['query']) ) {
 			$path = explode("wp-content", $url);
