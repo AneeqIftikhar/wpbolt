@@ -429,7 +429,7 @@ class DRMinification{
 									if(DrFileSupport::get_http_response_code($style[2])=="200"){
 										$minifier->add(@file_get_contents($style[2]));
 									}
-								}else{ if($this->isLocalUrl($style[2]))
+								}else if($this->isLocalUrl($style[2])){
 									$minifier->add($this->urlToDirectory($style[2]));
 								}
 							}
@@ -442,17 +442,13 @@ class DRMinification{
 					echo "Exception";
 				}
 			}
-			$minifiedPathCSS = DR_PLUGIN_DIR.'/cached/css/'.DR_SLUG.'_style_major.min.css';
-			$minifiedContent = $minifier->minify($minifiedPathCSS); 
-			$minifiedPathCSS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/cached/css/'.DR_SLUG.'_style_major.min.css';
-			//if($defer){
-			//	$lazyScript = "<script>document.addEventListener('DOMContentLoaded', function(event) {var link = document.createElement('link');link.media='all';link.type='text/css';link.rel = 'stylesheet';link.href = '".$minifiedPathCSS."';document.head.appendChild(link);});</script>";
-			//	$html = str_replace( '</body>', $lazyScript.'</body>', $html );
-			//}else{
-				$html = str_replace( '</head>', '<link rel="stylesheet" href="'.$minifiedPathCSS.'" type="text/css" media="all"></head>', $html );
-			//}
 
-			//$html = str_replace( '</head>', '<style>'.$minifiedContent.'</style></head>', $html );
+			if($minifier != null){
+				$minifiedPathCSS = DR_PLUGIN_DIR.'/cached/css/'.DR_SLUG.'_style_major.min.css';
+				$minifiedContent = $minifier->minify($minifiedPathCSS); 
+				$minifiedPathCSS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/cached/css/'.DR_SLUG.'_style_major.min.css';
+				$html = str_replace( '</head>', '<link rel="stylesheet" href="'.$minifiedPathCSS.'" type="text/css" media="all"></head>', $html );
+			}
 		}
 		return $html;
 	}
@@ -605,7 +601,7 @@ class DRMinification{
 									if(DrFileSupport::get_http_response_code($script[2])=="200"){
 										$minifier->add(@file_get_contents($script[2]));
 									}
-								}else{ if($this->isLocalUrl($script[2]))
+								}else if($this->isLocalUrl($script[2])){
 									$minifier->add($this->urlToDirectory($script[2]));
 								}
 							}
