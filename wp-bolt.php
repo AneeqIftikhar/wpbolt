@@ -7,7 +7,7 @@
 
  * Description: This plugin is designed for website caching and speed enhancement.
 
- * Version: 1.0.0
+ * Version: 0.0.1
 
  * Author: Abdul Aleem Khan
 

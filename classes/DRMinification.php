@@ -309,7 +309,7 @@ class DRMinification{
 					$html = str_replace( $style[0], $replace_style, $html );
 				}
 				catch(Exception $e){
-					echo "Exception";
+					var_dump($e);
 				}		
 			}
 		}
@@ -368,7 +368,7 @@ class DRMinification{
 					$replace_style = str_replace( '<style', '<style data-minify=1', $replace_style );
 					$html = str_replace( $style[0], $replace_style, $html );
 				}catch(Exception $e){
-					echo "Exception";
+					var_dump($e);
 				}
 			}
 		}
@@ -439,7 +439,7 @@ class DRMinification{
 						$html = str_replace( $style[0], '', $html );
 					}
 				}catch(Exception $e){
-					echo "Exception";
+					var_dump($e);
 				}
 			}
 
@@ -534,7 +534,7 @@ class DRMinification{
 						$html = str_replace( $script[0], $replace_script, $html );
 					}
 				}catch(Exception $e){
-					echo "Exception";
+					var_dump($e);
 				}
 			}
 		}
@@ -611,7 +611,7 @@ class DRMinification{
 						$html = str_replace( $script[0], '', $html );
 					}
 				}catch(Exception $e){
-					echo "Exception";
+					var_dump($e);
 				}
 			}
 			$minifiedPathJS = DR_PLUGIN_DIR.'/cached/js/'.DR_SLUG.'_script_major.min.js';
