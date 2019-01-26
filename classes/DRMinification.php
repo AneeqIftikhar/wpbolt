@@ -362,8 +362,10 @@ class DRMinification{
 						$minifier = new Minify\CSS($this->urlToDirectory($style[2]));
 					}
 					$minifiedPathCSS = DR_PLUGIN_DIR.'/cached/css/'.DR_SLUG.'_style_'.$i.'.min.css';
+					$minifiedPathCSS = str_replace('//cached', '/cached', $minifiedPathCSS);
 					$minifier->minify($minifiedPathCSS);
 					$minifiedPathCSS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/cached/css/'.DR_SLUG.'_style_'.$i.'.min.css';
+					$minifiedPathCSS = str_replace('//cached', '/cached', $minifiedPathCSS);
 					$replace_style = str_replace( $style[2], $minifiedPathCSS, $style[0] );
 					$replace_style = str_replace( '<style', '<style data-minify=1', $replace_style );
 					$html = str_replace( $style[0], $replace_style, $html );
@@ -445,8 +447,10 @@ class DRMinification{
 
 			if($minifier != null){
 				$minifiedPathCSS = DR_PLUGIN_DIR.'/cached/css/'.DR_SLUG.'_style_major.min.css';
+				$minifiedPathCSS = str_replace('//cached', '/cached', $minifiedPathCSS);
 				$minifiedContent = $minifier->minify($minifiedPathCSS); 
 				$minifiedPathCSS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/cached/css/'.DR_SLUG.'_style_major.min.css';
+				$minifiedPathCSS = str_replace('//cached', '/cached', $minifiedPathCSS);
 				$html = str_replace( '</head>', '<link rel="stylesheet" href="'.$minifiedPathCSS.'" type="text/css" media="all"></head>', $html );
 			}
 		}
@@ -526,8 +530,10 @@ class DRMinification{
 					if(DrFileSupport::get_http_response_code($script[2])=="200"){
 						$minifier = new Minify\JS(@file_get_contents($script[2]));
 						$minifiedPathJS = DR_PLUGIN_DIR.'/cached/js/'.DR_SLUG.'_script_'.$i.'.min.js';
+						$minifiedPathJS = str_replace('//cached', '/cached', $minifiedPathJS);
 						$minifiedContent=$minifier->minify($minifiedPathJS);
 						$minifiedPathJS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/cached/js/'.DR_SLUG.'_script_'.$i.'.min.js';
+						$minifiedPathJS = str_replace('//cached', '/cached', $minifiedPathJS);
 						$replace_script = str_replace( $script[2], $minifiedPathJS, $script[0] );
 						$replace_script = str_replace( '<script', '<script data-minify=1', $replace_script );
 						$replace_script = str_replace( '>', ' defer>', $replace_script );
@@ -539,9 +545,11 @@ class DRMinification{
 			}
 		}
 		if($j>0){
-			$target = DR_PLUGIN_DIR.'/cached/js/'.DR_SLUG.'_script_0.min.js';
-			@file_put_contents($target, $mincontent);
+			$minifiedPathJS = DR_PLUGIN_DIR.'/cached/js/'.DR_SLUG.'_script_0.min.js';
+			$minifiedPathJS = str_replace('//cached', '/cached', $minifiedPathJS);
+			@file_put_contents($minifiedPathJS, $mincontent);
 			$minifiedPathJS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/cached/js/'.DR_SLUG.'_script_0.min.js';
+			$minifiedPathJS = str_replace('//cached', '/cached', $minifiedPathJS);
 			$html = str_replace( '</body>', '<script data-minify=1 type="text/javascript" src="'.$minifiedPathJS.'" defer></script></body>', $html );
 		}
 		return $html;
@@ -615,8 +623,10 @@ class DRMinification{
 				}
 			}
 			$minifiedPathJS = DR_PLUGIN_DIR.'/cached/js/'.DR_SLUG.'_script_major.min.js';
+			$minifiedPathJS = str_replace('//cached', '/cached', $minifiedPathJS);
 			$minifiedContent = $minifier->minify($minifiedPathJS); 
 			$minifiedPathJS = WP_CONTENT_URL.'/plugins/'.DR_SLUG.'/cached/js/'.DR_SLUG.'_script_major.min.js';
+			$minifiedPathJS = str_replace('//cached', '/cached', $minifiedPathJS);
 			//if($defer){
 			//	$lazyScript = "<script>document.addEventListener('DOMContentLoaded', function(event) {var link = document.createElement('link');link.media='all';link.type='text/css';link.rel = 'stylesheet';link.href = '".$minifiedPathCSS."';document.head.appendChild(link);});</script>";
 			//	$html = str_replace( '</body>', $lazyScript.'</body>', $html );
