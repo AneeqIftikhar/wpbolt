@@ -246,6 +246,7 @@ function drMinifyContent($html){
 }
 
 $output = "";
+
 add_filter('final_output', 'drMinifyContent', $output);
 
 ob_start();
@@ -256,8 +257,12 @@ add_action('shutdown', function() {
         $final .= ob_get_clean();
     }
     if ( ! is_admin() ) {
-		$dr_cache_control = new DRCacheControl();
-	    echo $dr_cache_control->createCacheFile($final);
+		if ( $GLOBALS['pagenow'] === 'wp-login.php' ) {
+			echo $final;
+		}else{
+			$dr_cache_control = new DRCacheControl();
+			echo $dr_cache_control->createCacheFile($final);
+		}
 	}else{
 		echo $final;
 	}
