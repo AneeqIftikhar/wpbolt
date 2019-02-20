@@ -7,7 +7,7 @@
 
  * Description: This plugin is designed for website caching and speed enhancement.
 
- * Version: 0.0.2
+ * Version: 0.0.3
 
  * Author: Abdul Aleem Khan
 
@@ -91,6 +91,89 @@ function dr_set_options( ) {
 				continue;
 			}
 			$dr_options->setOption($key, $value);
+
+			if($key == 'basic_lazyload' && $value == 1){
+				$dr_options->setOption('lazyload', 1);
+			}
+
+			if($key == 'basic_lazyload' && $value == 0){
+				$dr_options->setOption('lazyload', 0);
+			}
+
+			if($key == 'basic_cache' && $value == 1){
+				$dr_options->setOption('cache_web', 1);
+				$dr_cache_control = new DRCacheControl();
+  				$dr_cache_control->generateAdvancedCacheFile();
+			}
+
+			if($key == 'basic_cache' && $value == 0){
+				$dr_options->setOption('cache_web', 0);
+				$dr_cache_control = new DRCacheControl();
+  				$dr_cache_control->cleanAdvancedCacheFile();
+			}
+
+			if($key == 'advance_minify_js' && $value == 1){
+				$dr_options->setOption('minify_inline_js', 1);
+				$dr_options->setOption('minify_external_js', 1);
+				$dr_options->setOption('defer_js', 1);
+				$dr_options->setOption('remove_js_queries', 1);
+			}
+
+			if($key == 'advance_minify_js' && $value == 0){
+				if($dr_options->getOption('basic_minify_js') == 0){
+					$dr_options->setOption('minify_inline_js', 0);
+					$dr_options->setOption('minify_external_js', 0);
+				}
+				$dr_options->setOption('defer_js', 0);
+				$dr_options->setOption('remove_js_queries', 0);
+			}
+
+			if($key == 'basic_minify_js' && $value == 1){
+				$dr_options->setOption('minify_inline_js', 1);
+				$dr_options->setOption('minify_external_js', 1);
+			}
+
+			if($key == 'basic_minify_js' && $value == 0){
+				if($dr_options->getOption('advance_minify_js') == 0){
+					$dr_options->setOption('minify_inline_js', 0);
+					$dr_options->setOption('minify_external_js', 0);
+				}
+			}
+
+			if($key == 'advance_minify_css' && $value == 1){
+				$dr_options->setOption('minify_inline_css', 1);
+				$dr_options->setOption('minify_external_css', 1);
+				$dr_options->setOption('remove_css_queries', 1);
+			}
+
+			if($key == 'advance_minify_css' && $value == 0){
+				if($dr_options->getOption('basic_minify_css') == 0){
+					$dr_options->setOption('minify_inline_css', 0);
+					$dr_options->setOption('minify_external_css', 0);
+				}
+				$dr_options->setOption('remove_css_queries', 0);
+			}
+
+			if($key == 'basic_minify_css' && $value == 1){
+				$dr_options->setOption('minify_inline_css', 1);
+				$dr_options->setOption('minify_external_css', 1);
+			}
+
+			if($key == 'basic_minify_css' && $value == 0){
+				if($dr_options->getOption('advance_minify_css') == 0){
+					$dr_options->setOption('minify_inline_css', 0);
+					$dr_options->setOption('minify_external_css', 0);
+				}
+			}
+
+			if(($key == 'minify_inline_css' || $key == 'minify_external_css' || $key == 'defer_css' || $key == 'remove_css_queries') && $value == 0 ){
+				$dr_options->setOption('advance_minify_css', 0);
+			}
+
+			if(($key == 'minify_inline_js' || $key == 'minify_external_js' || $key == 'remove_js_queries') && $value == 0 ){
+				$dr_options->setOption('advance_minify_js', 0);
+			}
+
 			$changed++;
 		}
 		if($changed > 0){
@@ -111,11 +194,14 @@ add_action( 'wp_ajax_dr_set_options', 'dr_set_options' );
 function drFooterScript(){
 	?>
 	<script>
-	    function postSettings(){  
-	    	var dr_notice = document.getElementById("dr_notice");
+		var dr_notice_id;
+		var dr_hide_notices = []; 
+		function postSettings(id){  
+			dr_notice_id = id;
+	    	var dr_notice = document.getElementById(id);
  	    	dr_notice.style.display = "inherit";
-    		dr_notice.classList.remove("success");
-    		dr_notice.innerHTML = "Saving settings.";
+    		dr_notice.classList.remove("text-success");
+    		dr_notice.innerHTML = "Saving...";
   	
 	    	var form = jQuery("#dr_settings_form")[0];
 	    	var data = {};
@@ -146,24 +232,31 @@ function drFooterScript(){
 	    	if( typeof response == "string" ){
 	    		response = JSON.parse(response);
 	    	}
-	    	var dr_notice = document.getElementById("dr_notice");
+	    	var dr_notice = document.getElementById(dr_notice_id);
 	    	if(response.status == "success"){
 	    		dr_notice.style.display = "inherit";
-	    		dr_notice.classList.add("success");
-	    		dr_notice.innerHTML = response.message;
+	    		dr_notice.classList.add("text-success");
+	    		dr_notice.innerHTML = "Saved.";
 	    	}else{
 	    		dr_notice.style.display = "inherit";
-	    		dr_notice.classList.remove("success");
-	    		dr_notice.innerHTML = response.message;
+	    		dr_notice.classList.remove("text-success").add("text-danger");
+	    		dr_notice.innerHTML = "Failed.";
 	    	}
+			dr_hide_notices.push(dr_notice_id);
 	    	console.log(response);
+			setTimeout(
+				function(){
+					var id = dr_hide_notices.splice(0, 1);
+					jQuery('#'+id).hide(100);
+				}, 3000
+			);
 	    }
 
 	    function drError(obj){
 	    	console.error(obj);
 	    }
 	</script>
-	<?php
+<?php
 }
 add_action('admin_footer', 'drFooterScript');
 
@@ -172,60 +265,29 @@ function drMinifyContent($html){
 	$drMinification = new DRMinification();
 	$html = $drMinification->drRemoveComments($html);
 
-	if($dr_options->checked("combine_css")){
+	if($dr_options->checked("remove_css_queries")){
+		$html = $drMinification->removeQueriesCss($html);
+	}
+	if($dr_options->checked("minify_external_css")){
+		$drCombineCss = false;
 		$drDeferCss = false;
-		if($dr_options->checked("defer_css")){
-			$drDeferCss = true;
-		}
 		$drNoQueries = false;
-		if($dr_options->checked("remove_css_queries")){
-			$drNoQueries = true;
-		}
-		$html = $drMinification->minifyAllCss($html, $drDeferCss, $drNoQueries);
-	}else{
-		if($dr_options->checked("remove_css_queries")){
-			$html = $drMinification->removeQueriesCss($html);
-		}
-		if($dr_options->checked("minify_external_css")){
-			$drCombineCss = false;
-			$drDeferCss = false;
-			if($dr_options->checked("defer_css")){
-				$drDeferCss = true;
-			}
-			$drNoQueries = false;
-			if($dr_options->checked("remove_css_queries")){
-				$drNoQueries = true;;
-			}
-			$html = $drMinification->minifyExternalCss($html, $drCombineCss, $drDeferCss, $drNoQueries);
-		}
-		if($dr_options->checked("minify_inline_css")){
-			$html = $drMinification->minifyInlineCss($html);
-		}
+		$html = $drMinification->minifyExternalCss($html, $drCombineCss, $drDeferCss, $drNoQueries);
+	}
+	if($dr_options->checked("minify_inline_css")){
+		$html = $drMinification->minifyInlineCss($html);
 	}
 
-	if($dr_options->checked("combine_js")){
-		$drDeferJs = false;
-		if($dr_options->checked("defer_js")){
-			$drDeferJs = true;
-		}
-		$drNoQueries = false;
-		if($dr_options->checked("remove_js_queries")){
-			$drNoQueries = true;
-		}
-		$html = $drMinification->minifyAllJs($html, $drDeferJs, $drNoQueries);
-	}else{
+	if($dr_options->checked("remove_js_queries")){
+		$html = $drMinification->removeQueriesJs($html);
+	}
 
-		if($dr_options->checked("remove_js_queries")){
-			$html = $drMinification->removeQueriesJs($html);
-		}
+	if($dr_options->checked("minify_external_js")){
+		$html = $drMinification->minifyExternalJs($html);
+	}
 
-		if($dr_options->checked("minify_external_js")){
-			$html = $drMinification->minifyExternalJs($html);
-		}
-
-		if($dr_options->checked("minify_inline_js")){
-			$html = $drMinification->minifyInlineJs($html);
-		}
+	if($dr_options->checked("minify_inline_js")){
+		$html = $drMinification->minifyInlineJs($html);
 	}
 
 	$drImageOptimization = new DRImageOptimization($dr_options->options);

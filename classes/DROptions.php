@@ -54,15 +54,26 @@ class DROptions{
 
 	public function defaultValues(){
 		$this->options = [
+			'basic_lazyload' => 0,
+			'basic_cache' => 0,
+			'basic_minify_js' => 0,
+			'advance_minify_js' => 0,
+			'basic_minify_css' => 0,
+			'advance_minify_css' => 0,
+
+
+
 			'cache_web' => 0,
 			'cache_mobile' => 0,
 			'cache_logged_in' => 0,
+			'minify_css' => 0,
 			'minify_inline_css' => 0,
 			'minify_external_css' => 0,
 			'combine_css' => 0,
 			'defer_css' => 0,
 			'remove_css_queries' => 0,
 			'exclude_css'=>'',
+			'minify_js' => 0,
 			'minify_inline_js' => 0,
 			'minify_external_js' => 0,
 			'combine_js' => 0,
@@ -77,7 +88,6 @@ class DROptions{
 			'newsletter' => 0,
 			'collection' => 0,
 			'combine_google_fonts' => 0
-
 		];
 		$this->addOptions();	
 	}
