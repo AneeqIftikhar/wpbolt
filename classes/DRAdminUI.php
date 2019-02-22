@@ -123,12 +123,29 @@ class DRAdminUI{
 				}
 
 				.pro-feature{
-					padding-left:22px;
+					padding-left:25px;
 				}
 
 				.pro-feature > i{
 					position: absolute;
 					left: 30px;
+				}
+
+				input{
+					border:0px solid white !important;
+					box-shadow: inset 0 1px 2px rgba(0,0,0,0) !important;
+					background-image: none !important;
+					border: 1px solid #9c27b0 !important;
+					border-radius: 4px !important;
+					padding-left: 4px !important;
+					padding-right: 4px !important;
+				}
+
+				textarea{
+					border: 1px solid #9c27b0 !important;
+					border-radius: 4px !important;
+					padding: 4px !important;
+					background-image: none !important;
 				}
 			</style>
 			<style>
@@ -180,8 +197,13 @@ class DRAdminUI{
 				}
 			</style>
 			<div class="wrap dr-bolt-ui">
+				<nav class="navbar navbar-expand-lg row">
+					<div class="container">
+						<a class="navbar-brand" href="#"><img width="180px" src="<?php echo DR_PLUGIN_PATH.'res/logo.png'?>"></a>
+					</div>
+				</nav>
 				<div class="row">
-					<div class="col-lg-7 col-md-8 col-xs-12 bg-light py-4">
+					<div class="col-lg-8 col-md-8 col-xs-12 bg-light py-4">
 						<ul class="nav nav-pills nav-pills-icons" role="tablist">
 							<li class="nav-item">
 								<a class="nav-link <?php echo $this->drActivelink('basic'); ?>" href="<?php echo $this->drTablink('basic'); ?>">
@@ -193,6 +215,24 @@ class DRAdminUI{
 								<a class="nav-link <?php echo $this->drActivelink('advance'); ?>" href="<?php echo $this->drTablink('advance'); ?>">
 									<i class="material-icons">settings_input_component</i>
 									Advance
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link <?php echo $this->drActivelink('faq'); ?>" href="<?php echo $this->drTablink('faq'); ?>">
+									<i class="material-icons">question_answer</i>
+									FAQs
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link <?php echo $this->drActivelink('support'); ?>" href="<?php echo $this->drTablink('support'); ?>">
+									<i class="material-icons">chat</i>
+									Support
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link <?php echo $this->drActivelink('donate'); ?>" href="<?php echo $this->drTablink('donate'); ?>">
+									<i class="material-icons">money</i>
+									Donate
 								</a>
 							</li>
 						</ul>
@@ -229,6 +269,9 @@ class DRAdminUI{
 																<strong class="mx-4" id="basic_cache_notice"></strong>
 															</div>
 														</div>
+													</div>
+													<div class="card-body">
+														<button class="btn btn-primary">Clear Cache</button>
 													</div>
 												</div>
 											</div>
@@ -289,7 +332,7 @@ class DRAdminUI{
 																<strong class="mx-4" id="basic_minify_css_notice"></strong>
 															</div>
 														</div>
-														<h4>Advance Optimization</h4>
+														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Advance Optimization <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
 														<p>Enabling this option will minify and optimize the inline blocks and external files of CSS.</p>
 														<div class="row">
 															<div class="col-8">
@@ -334,7 +377,7 @@ class DRAdminUI{
 																<strong class="mx-4" id="basic_minify_js_notice"></strong>
 															</div>
 														</div>
-														<h4>Advance Optimization</h4>
+														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Advance Optimization <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
 														<p>Enabling this option will minify and optimize the inline blocks and external files of Javascript.</p>
 														<div class="row">
 															<div class="col-8">
@@ -388,7 +431,7 @@ class DRAdminUI{
 																<strong class="mx-4" id="basic_cache_notice"></strong>
 															</div>
 														</div>
-														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Enable Mobile Cache <small class="text-primary">Pro Feature</small></h4>
+														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Enable Mobile Cache <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
 														<p>Enabling this option will cache web for visitors on mobile devices.</p>
 														<div class="row">
 															<div class="col-8">
@@ -404,6 +447,9 @@ class DRAdminUI{
 																<strong class="mx-4" id="basic_cache_mobile"></strong>
 															</div>
 														</div>
+													</div>
+													<div class="card-body">
+														<button class="btn btn-primary">Clear Cache</button>
 													</div>
 												</div>
 											</div>
@@ -437,12 +483,12 @@ class DRAdminUI{
 																<strong class="mx-4" id="basic_lazyload_notice"></strong>
 															</div>
 														</div>
-														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Background Images <small class="text-primary">Pro Feature</small></h4>
+														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Background Images <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
 														<p>Enabling this option will lazyload all images that are added in the backgrounds of different UI elements.</p>
 														<div class="row">
 															<div class="col-8">
 																<div class="onoffswitch" class="pull-right">
-																	<input type="checkbox" name="lazyload_bg" class="onoffswitch-checkbox" id="lazyload_bg" value="1" disabled>
+																	<input type="checkbox" name="lazyload_bg" onclick="postSettings('lazyload_bg_notice')" class="onoffswitch-checkbox" id="lazyload_bg" value="1" <?php checked(1, $options['lazyload_bg'], true); ?>>
 																	<label class="onoffswitch-label" for="lazyload_bg">
 																		<span class="onoffswitch-inner"></span>
 																		<span class="onoffswitch-switch"></span>
@@ -458,7 +504,7 @@ class DRAdminUI{
 														<textarea placeholder="Excluded images here" class="form-control w-100" type="textarea" name="exclude_image" cols="60" rows="5"><?php echo $options['exclude_image']; ?></textarea>
 														<div class="row">
 															<div class="col-8">
-																<button type="button" class="btn btn-primary" onclick="postSettings('exclude_image_notice')">Save</button>
+																<button type="button" class="btn btn-primary" onclick="postSettings('exclude_image_notice')">Exclude Images</button>
 															</div>
 															<div class="col-4 text-right">
 																<strong class="mx-4 pt-3" id="exclude_image_notice"></strong>
@@ -477,6 +523,22 @@ class DRAdminUI{
 														</div>
 													</div>
 													<div class="card-body">
+														<h4>Minify Local Files</h4>
+														<p>Enabling this option will minify the local files of CSS.</p>
+														<div class="row">
+															<div class="col-8">
+																<div class="onoffswitch" class="pull-right">
+																	<input type="checkbox" name="minify_local_css" onchange="postSettings('minify_local_css_notice')" class="onoffswitch-checkbox" id="minify_local_css" value="1" <?php checked(1, $options['minify_local_css'], true); ?>>
+																	<label class="onoffswitch-label" for="minify_local_css">
+																		<span class="onoffswitch-inner"></span>
+																		<span class="onoffswitch-switch"></span>
+																	</label>
+																</div>
+															</div>
+															<div class="col-4 text-right">
+																<strong class="mx-4" id="minify_local_css_notice"></strong>
+															</div>
+														</div>
 														<h4>Minify Inline Blocks</h4>
 														<p>Enabling this option will minify the inline blocks of CSS.</p>
 														<div class="row">
@@ -493,7 +555,7 @@ class DRAdminUI{
 																<strong class="mx-4" id="minify_inline_css_notice"></strong>
 															</div>
 														</div>
-														<h4>Minify Linked Files</h4>
+														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Minify External Files <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
 														<p>Enabling this option will minify the external files of CSS.</p>
 														<div class="row">
 															<div class="col-8">
@@ -509,7 +571,7 @@ class DRAdminUI{
 																<strong class="mx-4" id="minify_external_css_notice"></strong>
 															</div>
 														</div>
-														<h4>Remove Queries from CSS</h4>
+														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Remove Queries from CSS <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
 														<p>Enabling this option will remove the version queries from external files of CSS. It will increase the serving speed.</p>
 														<div class="row">
 															<div class="col-8">
@@ -525,28 +587,12 @@ class DRAdminUI{
 																<strong class="mx-4" id="remove_css_queries_notice"></strong>
 															</div>
 														</div>
-														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Combine CSS <small class="text-primary">Pro Feature</small></h4>
-														<p>Enabling this option will combine all CSS into as few files as possible. It will reduce the number of HTTP requests and will increase the load speed magically.</p>
-														<div class="row">
-															<div class="col-8">
-																<div class="onoffswitch" class="pull-right">
-																	<input type="checkbox" name="combine_css" class="onoffswitch-checkbox" id="combine_css" value="1" disabled>
-																	<label class="onoffswitch-label" for="combine_css">
-																		<span class="onoffswitch-inner"></span>
-																		<span class="onoffswitch-switch"></span>
-																	</label>
-																</div>
-															</div>
-															<div class="col-4 text-right">
-																<strong class="mx-4" id="combine_css_notice"></strong>
-															</div>
-														</div>
 														<h4>Exclude CSS Files</h4>
 														<p>Enter one file name per line. If the file url is (http://yourdomain.com/your/path/my_style.css) then enter <strong>my_style</strong></p>
 														<textarea placeholder="Excluded CSS files here" class="form-control w-100" type="textarea" name="exclude_css" cols="60" rows="5"><?php echo $options['exclude_css']; ?></textarea>
 														<div class="row">
 															<div class="col-8">
-																<button type="button" class="btn btn-primary" onclick="postSettings('exclude_css_notice')">Save</button>
+																<button type="button" class="btn btn-primary" onclick="postSettings('exclude_css_notice')">Exclude Styles</button>
 															</div>
 															<div class="col-4 text-right">
 																<strong class="mx-4 pt-3" id="exclude_css_notice"></strong>
@@ -565,6 +611,22 @@ class DRAdminUI{
 														</div>
 													</div>
 													<div class="card-body">
+														<h4>Minify Local Files</h4>
+														<p>Enabling this option will minify the local files of Javascript.</p>
+														<div class="row">
+															<div class="col-8">
+																<div class="onoffswitch" class="pull-right">
+																	<input type="checkbox" name="minify_local_js" onchange="postSettings('minify_local_js_notice')" class="onoffswitch-checkbox" id="minify_local_js" value="1" <?php checked(1, $options['minify_local_js'], true); ?>>
+																	<label class="onoffswitch-label" for="minify_local_js">
+																		<span class="onoffswitch-inner"></span>
+																		<span class="onoffswitch-switch"></span>
+																	</label>
+																</div>
+															</div>
+															<div class="col-4 text-right">
+																<strong class="mx-4" id="minify_local_js_notice"></strong>
+															</div>
+														</div>
 														<h4>Minify Inline Blocks</h4>
 														<p>Enabling this option will minify the inline blocks of Javascript.</p>
 														<div class="row">
@@ -581,8 +643,7 @@ class DRAdminUI{
 																<strong class="mx-4" id="minify_inline_js_notice"></strong>
 															</div>
 														</div>
-														<hr>
-														<h4>Minify Linked Files</h4>
+														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Minify External Files <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
 														<p>Enabling this option will minify the external files of Javascript.</p>
 														<div class="row">
 															<div class="col-8">
@@ -598,7 +659,7 @@ class DRAdminUI{
 																<strong class="mx-4" id="minify_external_js_notice"></strong>
 															</div>
 														</div>
-														<h4>Remove Queries from JS</h4>
+														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Remove Queries from JS <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
 														<p>Enabling this option will remove the version queries from external files of Javascript. It will increase the serving speed.</p>
 														<div class="row">
 															<div class="col-8">
@@ -614,7 +675,7 @@ class DRAdminUI{
 																<strong class="mx-4" id="remove_js_queries_notice"></strong>
 															</div>
 														</div>
-														<h4>Defer JS</h4>
+														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Defer JS <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
 														<p>Enabling this option will load the Javascript files after the UI has been loaded. This will stop render blocking due to large script files.</p>
 														<div class="row">
 															<div class="col-8">
@@ -630,28 +691,12 @@ class DRAdminUI{
 																<strong class="mx-4" id="defer_js_notice"></strong>
 															</div>
 														</div>
-														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Combine Javascript <small class="text-primary">Pro Feature</small></h4>
-														<p>Enabling this option will combine all Javascript into as few files as possible. It will reduce the number of HTTP requests and will increase the load speed magically.</p>
-														<div class="row">
-															<div class="col-8">
-																<div class="onoffswitch" class="pull-right">
-																	<input type="checkbox" name="combine_js" class="onoffswitch-checkbox" id="combine_js" value="1" disabled>
-																	<label class="onoffswitch-label" for="combine_js">
-																		<span class="onoffswitch-inner"></span>
-																		<span class="onoffswitch-switch"></span>
-																	</label>
-																</div>
-															</div>
-															<div class="col-4 text-right">
-																<strong class="mx-4" id="combine_js_notice"></strong>
-															</div>
-														</div>
 														<h4>Exclude JS Files</h4>
 														<p>Enter one file name per line. If the file url is (http://yourdomain.com/your/path/my_script.js) then enter <strong>my_script</strong></p>
 														<textarea placeholder="Excluded JS files here" class="form-control w-100" type="textarea" name="exclude_js" cols="60" rows="5"><?php echo $options['exclude_js']; ?></textarea>
 														<div class="row">
 															<div class="col-8">
-																<button type="button" class="btn btn-primary" onclick="postSettings('exclude_js_notice')">Save</button>
+																<button type="button" class="btn btn-primary" onclick="postSettings('exclude_js_notice')">Exclude Scripts</button>
 															</div>
 															<div class="col-4 text-right">
 																<strong class="mx-4 pt-3" id="exclude_js_notice"></strong>
@@ -663,10 +708,139 @@ class DRAdminUI{
 										</div>
 									<?php } ?>
 								</div>
+								<div class="tab-pane <?php echo $this->drActivelink('faq'); ?>" id="faq">
+									<h2 class="text-center">Have question?</h2>
+									<p>
+										You can find your query in the frequently asked questions. 
+										If your issues is not mentioned then you can contact our support in 'Support' section.
+									</p>
+									<div id="accordion" role="tablist">
+										<div class="card card-collapse">
+											<div class="card-header card-header-primary m-0 p-0 w-100" role="tab" id="headingOne">
+												<a data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+													<h4 class="px-2 py-2 m-0 text-white">
+														What is Cache?
+														<i class="material-icons" style="float:right;">add</i>
+													</h4>
+												</a>
+											</div>
+											<div id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+												<div class="card-body">
+													Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+												</div>
+											</div>
+										</div>
+										<div class="card card-collapse">
+											<div class="card-header card-header-primary m-0 p-0 w-100" role="tab" id="headingTwo">
+												<a data-toggle="collapse" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+													<h4 class="px-2 py-2 m-0 text-white">
+														What is Lazyload?
+														<i class="material-icons" style="float:right;">add</i>
+													</h4>
+												</a>
+											</div>
+											<div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
+												<div class="card-body">
+													Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+												</div>
+											</div>
+										</div>
+										<div class="card card-collapse">
+											<div class="card-header card-header-primary m-0 p-0 w-100" role="tab" id="headingThree">
+												<a data-toggle="collapse" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+													<h4 class="px-2 py-2 m-0 text-white">
+														What is minification?
+														<i class="material-icons" style="float:right;">add</i>
+													</h4>
+												</a>
+											</div>
+											<div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
+												<div class="card-body">
+													Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane <?php echo $this->drActivelink('support'); ?>" id="support">
+									<div class="card">
+										<div class="card-header card-header-primary">
+											<h3 class="m-0 p-0">Contact support</h3>
+										</div>
+										<div class="card-body px-5 pt-5">
+											<form>
+												<div class="form-group">
+													<label for="name">Full Name</label>
+													<input type="text" class="form-control" id="name" placeholder="John Doe">
+												</div>
+												<div class="form-group">
+													<label for="email">Email address</label>
+													<input type="email" class="form-control" id="email" placeholder="name@example.com">
+												</div>
+												<div class="form-group">
+													<label for="message">Message</label>
+													<textarea placeholder="Type message here" class="form-control" id="message" rows="3"></textarea>
+												</div>
+											</form>
+										</div>
+										<div class="card-footer px-5 text-right" style="display: initial !important;">
+											<button type="button" class="btn btn-primary">Submit</button>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane <?php echo $this->drActivelink('donate'); ?>" id="donate">
+									<div class="info">
+										<div class="icon icon-primary">
+											<i class="material-icons">money</i>
+										</div>
+										<h4 class="info-title">Donations</h4>
+										<p>
+											Lorem ipsum donate some sum. Quo an dicit facete. 
+											At placerat scriptorem deterruisset quo. 
+											Ea probo invidunt eloquents, Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+										</p>
+										<div class="form-check form-check-radio form-check-inline">
+											<label class="form-check-label">
+												<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1"> $1
+												<span class="circle">
+													<span class="check"></span>
+												</span>
+											</label>
+										</div>
+										<div class="form-check form-check-radio form-check-inline">
+											<label class="form-check-label">
+												<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="5" checked> $5
+												<span class="circle">
+													<span class="check"></span>
+												</span>
+											</label>
+										</div>
+										<div class="form-check form-check-radio form-check-inline">
+											<label class="form-check-label">
+												<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="10"> $10
+												<span class="circle">
+													<span class="check"></span>
+												</span>
+											</label>
+										</div>
+										<div class="form-check form-check-radio form-check-inline">
+											<label class="form-check-label">
+												<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="20"> $20
+												<span class="circle">
+													<span class="check"></span>
+												</span>
+											</label>
+										</div>
+										<hr>
+										<div class="text-right">
+											<button type="button" class="btn btn-primary">Make Donation</button>
+										</div>
+									</div>
+								</div>
 							</div>
 						</form>
 					</div>
-					<div class="col-lg-5 col-md-4 col-xs-12">
+					<div class="col-lg-4 col-md-4 col-xs-12">
 						<div class="info">
 							<div class="icon icon-primary">
 								<i class="material-icons">stars</i>

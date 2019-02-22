@@ -25,6 +25,7 @@ define( 'DR_NAME', "WP Bolt" );
 define( 'DR_FRIENDLY_NAME', "WP Bolt" );
 define( 'DR_VERSION', "1.0.0" );
 define( 'DR_PLUGIN_DIR', WP_CONTENT_DIR.'/plugins/'. DR_SLUG .'/' );
+define( 'DR_PLUGIN_PATH', WP_CONTENT_URL.'/plugins/'. DR_SLUG .'/' );
 define( 'DR_CACHE_PATH', DR_PLUGIN_DIR .'cached/' );
 
 
@@ -114,6 +115,7 @@ function dr_set_options( ) {
 
 			if($key == 'advance_minify_js' && $value == 1){
 				$dr_options->setOption('minify_inline_js', 1);
+				$dr_options->setOption('minify_local_js', 1);
 				$dr_options->setOption('minify_external_js', 1);
 				$dr_options->setOption('defer_js', 1);
 				$dr_options->setOption('remove_js_queries', 1);
@@ -122,26 +124,28 @@ function dr_set_options( ) {
 			if($key == 'advance_minify_js' && $value == 0){
 				if($dr_options->getOption('basic_minify_js') == 0){
 					$dr_options->setOption('minify_inline_js', 0);
-					$dr_options->setOption('minify_external_js', 0);
+					$dr_options->setOption('minify_local_js', 0);
 				}
+				$dr_options->setOption('minify_external_js', 0);
 				$dr_options->setOption('defer_js', 0);
 				$dr_options->setOption('remove_js_queries', 0);
 			}
 
 			if($key == 'basic_minify_js' && $value == 1){
 				$dr_options->setOption('minify_inline_js', 1);
-				$dr_options->setOption('minify_external_js', 1);
+				$dr_options->setOption('minify_local_js', 1);
 			}
 
 			if($key == 'basic_minify_js' && $value == 0){
 				if($dr_options->getOption('advance_minify_js') == 0){
 					$dr_options->setOption('minify_inline_js', 0);
-					$dr_options->setOption('minify_external_js', 0);
+					$dr_options->setOption('minify_local_js', 0);
 				}
 			}
 
 			if($key == 'advance_minify_css' && $value == 1){
 				$dr_options->setOption('minify_inline_css', 1);
+				$dr_options->setOption('minify_local_css', 1);
 				$dr_options->setOption('minify_external_css', 1);
 				$dr_options->setOption('remove_css_queries', 1);
 			}
@@ -149,28 +153,29 @@ function dr_set_options( ) {
 			if($key == 'advance_minify_css' && $value == 0){
 				if($dr_options->getOption('basic_minify_css') == 0){
 					$dr_options->setOption('minify_inline_css', 0);
-					$dr_options->setOption('minify_external_css', 0);
+					$dr_options->setOption('minify_local_css', 0);
 				}
+				$dr_options->setOption('minify_external_css', 0);
 				$dr_options->setOption('remove_css_queries', 0);
 			}
 
 			if($key == 'basic_minify_css' && $value == 1){
 				$dr_options->setOption('minify_inline_css', 1);
-				$dr_options->setOption('minify_external_css', 1);
+				$dr_options->setOption('minify_local_css', 1);
 			}
 
 			if($key == 'basic_minify_css' && $value == 0){
 				if($dr_options->getOption('advance_minify_css') == 0){
 					$dr_options->setOption('minify_inline_css', 0);
-					$dr_options->setOption('minify_external_css', 0);
+					$dr_options->setOption('minify_local_css', 0);
 				}
 			}
 
-			if(($key == 'minify_inline_css' || $key == 'minify_external_css' || $key == 'defer_css' || $key == 'remove_css_queries') && $value == 0 ){
+			if(($key == 'minify_inline_css' || $key == 'minify_local_css' || $key == 'minify_external_css' || $key == 'defer_css' || $key == 'remove_css_queries') && $value == 0 ){
 				$dr_options->setOption('advance_minify_css', 0);
 			}
 
-			if(($key == 'minify_inline_js' || $key == 'minify_external_js' || $key == 'remove_js_queries') && $value == 0 ){
+			if(($key == 'minify_inline_js' || $key == 'minify_local_js' || $key == 'minify_external_js' || $key == 'remove_js_queries') && $value == 0 ){
 				$dr_options->setOption('advance_minify_js', 0);
 			}
 
@@ -214,6 +219,34 @@ function drFooterScript(){
 					}
 				}else{
 					data[form[i].name] = form[i].value;
+				}
+
+				if(id == 'basic_minify_js_notice'){
+					if(data['basic_minify_js'] == 0){
+						data['basic_minify_js'] = 0;
+						jQuery('#advance_minify_js').prop('checked', false);
+					}
+				}
+
+				if(id == 'basic_minify_css_notice'){
+					if(data['basic_minify_css'] == 0){
+						data['advance_minify_css'] = 0;
+						jQuery('#advance_minify_css').prop('checked', false);
+					}
+				}
+				
+				if(id == 'advance_minify_css_notice'){
+					if(data['advance_minify_css'] == 1){
+						data['basic_minify_css'] = 1;
+						jQuery('#basic_minify_css').prop('checked', true);
+					}
+				}
+				
+				if(id == 'advance_minify_js_notice'){
+					if(data['advance_minify_js'] == 1){
+						data['basic_minify_js'] = 1;
+						jQuery('#basic_minify_js').prop('checked', true);
+					}
 				}
 	    	}
 	        data["action"] = 'dr_set_options';
