@@ -70,6 +70,39 @@ class DRMinification{
 		'recaptcha/api.js'
 	];
 
+	public $exCss = array();
+	public $exJs = array();
+	public function __construct($options){
+		$this->exCss = explode(PHP_EOL, $options['exclude_css']);
+		$this->exJs = explode(PHP_EOL, $options['exclude_js']);
+	}
+
+	public function fileName($url){
+		$path      = parse_url($url, PHP_URL_PATH);
+		$filename  = pathinfo($path, PATHINFO_FILENAME);
+		return $filename;
+	}
+
+	public function excludedJsFile($url){
+		$file = $this->fileName($url);
+		for($i=0; $i<sizeof($this->exJs); $i++){
+			if($file == $this->exJs[$i]){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function excludedCssFile($url){
+		$file = $this->fileName($url);
+		for($i=0; $i<sizeof($this->exCss); $i++){
+			if($file == $this->exCss[$i]){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public function getFileSize($url){
 		$ch = curl_init(); 
 	    curl_setopt($ch, CURLOPT_HEADER, true); 
@@ -132,26 +165,6 @@ class DRMinification{
 			return false;
 		}
 
-	    return $matches;
-	}
-
-	public function getAllCss($html){
-		$pattern = '<style.*>(.*)<\/style>|<link\s+[^>]+[\s\'"]?href\s*=\s*[\'"]\s*?([^\'"]+\.css(?:\?[^\'"]*)?)\s*?[\'"][^>]+?\/?>';
-		preg_match_all( '/' . $pattern . '/Umsi', $html, $matches, PREG_SET_ORDER );
-
-		if ( empty( $matches ) ) {
-			return false;
-		}
-	    return $matches;
-	}
-
-	public function getAllJs($html){
-		$pattern = '<script(?:(?!src=).)*?>(.*?)<\/script>|<script\s+[^>]+[\s\'"]?src\s*=\s*[\'"]\s*?([^\'"]+\.js(?:\?[^\'"]*)?)\s*?[\'"]([^>]+)?\/?>';
-		preg_match_all( '/' . $pattern . '/smix', $html, $matches, PREG_SET_ORDER );
-
-		if ( empty( $matches ) ) {
-			return false;
-		}
 	    return $matches;
 	}
 
@@ -333,6 +346,10 @@ class DRMinification{
 						continue;
 					}
 				}
+				$url = str_replace('&quot;', '', $style[2]);
+				if($this->excludedCssFile($url)){
+					continue;
+				}
 				$minifier = null;
 				try{
 					if($this->skipCss($style)){
@@ -379,44 +396,6 @@ class DRMinification{
 			return DR_SLUG.'-index-'.$file;
 		}
 		return DR_SLUG.'-'.$page.'-'.$file;
-	}
-
-	public function minifyAllCss($html, $defer=false, $noquery = false){
-		if($noquery){
-			$html = $this->removeQueriesCss($html);
-		}
-		$styles = $this->getAllCss( $html );
-		$minifier = null;
-		$file_number = 1;
-		if(!$styles){
-			$styles =  [];
-		}else{
-			foreach($styles as $style) {
-				if(strpos($style[0], 'rs-plugin-settings-inline-css') !== false){
-					continue;
-				}
-				try{
-					if($this->skipCss($style)){
-						$html = $this->cssSave($minifier, $file_number, $html);
-						$minifier = null;
-						$file_number++;
-						$html = str_replace( $style[0], '', $html );
-						$touched = str_replace('<style', '<style data-minify=0', $style[0]);
-						$html = str_replace('</head>', $touched."</head>",$html );
-						continue;
-					}else{
-						$minifier = $this->cssMinify($minifier, $style, true);
-						$html = str_replace( $style[0], '', $html );
-					}
-				}catch(Exception $e){
-					
-				}
-			}
-			$html = $this->cssSave($minifier, $file_number, $html);
-			$file_number++;
-			$minifier = null;
-		}
-		return $html;
 	}
 
 	public function skipCss($style){
@@ -522,14 +501,10 @@ class DRMinification{
 		return $html;
 	}
 
-	public function minifyExternalJs($html, $combine=false, $defer=false, $noquery=false){
+	public function minifyExternalJs($html, $scope){
 		$scripts = $this->getJSLinkedFiles( $html );
 		$minifier = null;
 		global $wp_scripts;
-		$ms = '';
-		foreach($wp_scripts as $wp_script) {
-			$ms[] = $wp_script;
-		}
 
 		$i=0;
 
@@ -537,6 +512,20 @@ class DRMinification{
 			$scripts =  [];
 		}else{
 			foreach($scripts as $script) {
+				$actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+				if($scope == "local"){
+					if(parse_url($script[2], PHP_URL_HOST) != parse_url($actual_link, PHP_URL_HOST)){
+						continue;
+					}
+				}else if($scope == "external"){
+					if(parse_url($script[2], PHP_URL_HOST) == parse_url($actual_link, PHP_URL_HOST)){
+						continue;
+					}
+				}
+				$url = str_replace('&quot;', '', $script[2]);
+				if($this->excludedJsFile($url)){
+					continue;
+				}
 				$minifier = null;
 				try{
 					if($this->jsSkip($script)){
@@ -568,52 +557,8 @@ class DRMinification{
 				}
 			}
 		}
-		$html = $html."<script id='AleemKhan'> var ms = " .json_encode($ms) . ";</script>";
 		return $html;
 	}
-
-	public function minifyAllJs($html, $defer=false, $noquery = false){
-		if($noquery){
-			$html = $this->removeQueriesJs($html);
-		}
-		$scripts = $this->getAllJs( $html );
-		$minifier = null;
-		$file_number=0;
-		if(!$scripts){
-			$scripts =  [];
-		}else{
-			foreach($scripts as $script) {
-				global $wp_scripts;
-				$skip = false;
-				if(strpos($script[0], 'application/ld+json') !== false){
-					continue;
-				}
-
-				try{
-					if($this->jsSkip($script)){
-						$html = $this->jsSave($minifier, $file_number, $html);
-						$minifier = null;
-						$file_number++;
-						$html = str_replace( $script[0], '', $html );
-						$touched = str_replace('<script', '<script data-minify=0', $script[0]);
-						$touched = str_replace('>', 'defer>', $touched);
-						$html = str_replace('</body>', $touched."</body>",$html );
-					}else{
-						$minifier = $this->jsMinify($minifier, $script, true);
-						$html = str_replace( $style[0], '', $html );
-					}
-				}catch(Exception $e){
-
-				}
-			}
-			$html = $this->jsSave($minifier, $file_number, $html);
-			$file_number++;
-			$minifier = null;
-			
-		}
-		return $html;
-	}
-
 
 	public function jsMinify($minifier, $script, $all=false){
 		if($minifier == null){

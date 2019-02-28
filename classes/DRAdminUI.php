@@ -229,12 +229,6 @@ class DRAdminUI{
 									Support
 								</a>
 							</li>
-							<li class="nav-item">
-								<a class="nav-link <?php echo $this->drActivelink('donate'); ?>" href="<?php echo $this->drTablink('donate'); ?>">
-									<i class="material-icons">money</i>
-									Donate
-								</a>
-							</li>
 						</ul>
 						<hr>
 						<form method="post" action="" id="dr_settings_form" onsubmit="postSettings(); return false;">
@@ -271,7 +265,8 @@ class DRAdminUI{
 														</div>
 													</div>
 													<div class="card-body">
-														<button class="btn btn-primary">Clear Cache</button>
+														<button type="button" onclick="clearCache('clear_cache_notice')" class="btn btn-primary">Clear Cache</button>
+														<strong class="mx-4" style="float:right; margin-top:15px;" id="clear_cache_notice"></strong>
 													</div>
 												</div>
 											</div>
@@ -332,22 +327,6 @@ class DRAdminUI{
 																<strong class="mx-4" id="basic_minify_css_notice"></strong>
 															</div>
 														</div>
-														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Advance Optimization <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
-														<p>Enabling this option will minify and optimize the inline blocks and external files of CSS.</p>
-														<div class="row">
-															<div class="col-8">
-																<div class="onoffswitch" class="pull-right">
-																	<input type="checkbox" name="advance_minify_css" onchange="postSettings('advance_minify_css_notice')" class="onoffswitch-checkbox" id="advance_minify_css" value="1" <?php checked(1, $options['advance_minify_css'], true); ?>>
-																	<label class="onoffswitch-label" for="advance_minify_css">
-																		<span class="onoffswitch-inner"></span>
-																		<span class="onoffswitch-switch"></span>
-																	</label>
-																</div>
-															</div>
-															<div class="col-4 text-right">
-																<strong class="mx-4" id="advance_minify_css_notice"></strong>
-															</div>
-														</div>
 													</div>
 												</div>
 											</div>
@@ -375,22 +354,6 @@ class DRAdminUI{
 															</div>
 															<div class="col-4 text-right">
 																<strong class="mx-4" id="basic_minify_js_notice"></strong>
-															</div>
-														</div>
-														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Advance Optimization <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
-														<p>Enabling this option will minify and optimize the inline blocks and external files of Javascript.</p>
-														<div class="row">
-															<div class="col-8">
-																<div class="onoffswitch" class="pull-right">
-																	<input type="checkbox" name="advance_minify_js" onchange="postSettings('advance_minify_js_notice')" class="onoffswitch-checkbox" id="advance_minify_js" value="1" <?php checked(1, $options['advance_minify_js'], true); ?>>
-																	<label class="onoffswitch-label" for="advance_minify_js">
-																		<span class="onoffswitch-inner"></span>
-																		<span class="onoffswitch-switch"></span>
-																	</label>
-																</div>
-															</div>
-															<div class="col-4 text-right">
-																<strong class="mx-4" id="advance_minify_js_notice"></strong>
 															</div>
 														</div>
 													</div>
@@ -431,25 +394,10 @@ class DRAdminUI{
 																<strong class="mx-4" id="basic_cache_notice"></strong>
 															</div>
 														</div>
-														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Enable Mobile Cache <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
-														<p>Enabling this option will cache web for visitors on mobile devices.</p>
-														<div class="row">
-															<div class="col-8">
-																<div class="onoffswitch" class="pull-right">
-																	<input type="checkbox" name="basic_cache_mobile" class="onoffswitch-checkbox" id="basic_cache_mobile" value="1" <?php checked(1, $options['basic_cache_mobile'], true); ?> disabled>
-																	<label class="onoffswitch-label" for="basic_cache_mobile">
-																		<span class="onoffswitch-inner"></span>
-																		<span class="onoffswitch-switch"></span>
-																	</label>
-																</div>
-															</div>
-															<div class="col-4 text-right">
-																<strong class="mx-4" id="basic_cache_mobile"></strong>
-															</div>
-														</div>
 													</div>
 													<div class="card-body">
-														<button class="btn btn-primary">Clear Cache</button>
+														<button type="button" onclick="clearCache('clear_cache_notice')" class="btn btn-primary">Clear Cache</button>
+														<strong class="mx-4" style="float:right; margin-top:15px;" id="clear_cache_notice"></strong>
 													</div>
 												</div>
 											</div>
@@ -481,22 +429,6 @@ class DRAdminUI{
 															</div>
 															<div class="col-4 text-right">
 																<strong class="mx-4" id="basic_lazyload_notice"></strong>
-															</div>
-														</div>
-														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Background Images <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
-														<p>Enabling this option will lazyload all images that are added in the backgrounds of different UI elements.</p>
-														<div class="row">
-															<div class="col-8">
-																<div class="onoffswitch" class="pull-right">
-																	<input type="checkbox" name="lazyload_bg" onclick="postSettings('lazyload_bg_notice')" class="onoffswitch-checkbox" id="lazyload_bg" value="1" <?php checked(1, $options['lazyload_bg'], true); ?>>
-																	<label class="onoffswitch-label" for="lazyload_bg">
-																		<span class="onoffswitch-inner"></span>
-																		<span class="onoffswitch-switch"></span>
-																	</label>
-																</div>
-															</div>
-															<div class="col-4 text-right">
-																<strong class="mx-4" id="lazyload_bg_notice"></strong>
 															</div>
 														</div>
 														<h4>Exclude Images</h4>
@@ -555,38 +487,6 @@ class DRAdminUI{
 																<strong class="mx-4" id="minify_inline_css_notice"></strong>
 															</div>
 														</div>
-														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Minify External Files <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
-														<p>Enabling this option will minify the external files of CSS.</p>
-														<div class="row">
-															<div class="col-8">
-																<div class="onoffswitch" class="pull-right">
-																	<input type="checkbox" name="minify_external_css" onchange="postSettings('minify_external_css_notice')" class="onoffswitch-checkbox" id="minify_external_css" value="1" <?php checked(1, $options['minify_external_css'], true); ?>>
-																	<label class="onoffswitch-label" for="minify_external_css">
-																		<span class="onoffswitch-inner"></span>
-																		<span class="onoffswitch-switch"></span>
-																	</label>
-																</div>
-															</div>
-															<div class="col-4 text-right">
-																<strong class="mx-4" id="minify_external_css_notice"></strong>
-															</div>
-														</div>
-														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Remove Queries from CSS <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
-														<p>Enabling this option will remove the version queries from external files of CSS. It will increase the serving speed.</p>
-														<div class="row">
-															<div class="col-8">
-																<div class="onoffswitch" class="pull-right">
-																	<input type="checkbox" name="remove_css_queries" onchange="postSettings('remove_css_queries_notice')" class="onoffswitch-checkbox" id="remove_css_queries" value="1" <?php checked(1, $options['remove_css_queries'], true); ?>>
-																	<label class="onoffswitch-label" for="remove_css_queries">
-																		<span class="onoffswitch-inner"></span>
-																		<span class="onoffswitch-switch"></span>
-																	</label>
-																</div>
-															</div>
-															<div class="col-4 text-right">
-																<strong class="mx-4" id="remove_css_queries_notice"></strong>
-															</div>
-														</div>
 														<h4>Exclude CSS Files</h4>
 														<p>Enter one file name per line. If the file url is (http://yourdomain.com/your/path/my_style.css) then enter <strong>my_style</strong></p>
 														<textarea placeholder="Excluded CSS files here" class="form-control w-100" type="textarea" name="exclude_css" cols="60" rows="5"><?php echo $options['exclude_css']; ?></textarea>
@@ -641,54 +541,6 @@ class DRAdminUI{
 															</div>
 															<div class="col-4 text-right">
 																<strong class="mx-4" id="minify_inline_js_notice"></strong>
-															</div>
-														</div>
-														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Minify External Files <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
-														<p>Enabling this option will minify the external files of Javascript.</p>
-														<div class="row">
-															<div class="col-8">
-																<div class="onoffswitch" class="pull-right">
-																	<input type="checkbox" name="minify_external_js" onchange="postSettings('minify_external_js_notice')" class="onoffswitch-checkbox" id="minify_external_js" value="1" <?php checked(1, $options['minify_external_js'], true); ?>>
-																	<label class="onoffswitch-label" for="minify_external_js">
-																		<span class="onoffswitch-inner"></span>
-																		<span class="onoffswitch-switch"></span>
-																	</label>
-																</div>
-															</div>
-															<div class="col-4 text-right">
-																<strong class="mx-4" id="minify_external_js_notice"></strong>
-															</div>
-														</div>
-														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Remove Queries from JS <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
-														<p>Enabling this option will remove the version queries from external files of Javascript. It will increase the serving speed.</p>
-														<div class="row">
-															<div class="col-8">
-																<div class="onoffswitch" class="pull-right">
-																	<input type="checkbox" name="remove_js_queries" onchange="postSettings('remove_js_queries_notice')" class="onoffswitch-checkbox" id="remove_js_queries" value="1" <?php checked(1, $options['remove_js_queries'], true); ?>>
-																	<label class="onoffswitch-label" for="remove_js_queries">
-																		<span class="onoffswitch-inner"></span>
-																		<span class="onoffswitch-switch"></span>
-																	</label>
-																</div>
-															</div>
-															<div class="col-4 text-right">
-																<strong class="mx-4" id="remove_js_queries_notice"></strong>
-															</div>
-														</div>
-														<h4 class="pro-feature"><i class="material-icons text-primary">lock</i>Defer JS <span class="badge badge-primary" style="font-size:15px;">Pro Feature</span></h4>
-														<p>Enabling this option will load the Javascript files after the UI has been loaded. This will stop render blocking due to large script files.</p>
-														<div class="row">
-															<div class="col-8">
-																<div class="onoffswitch" class="pull-right">
-																	<input type="checkbox" name="defer_js" onchange="postSettings('defer_js_notice')" class="onoffswitch-checkbox" id="defer_js" value="1" <?php checked(1, $options['defer_js'], true); ?>>
-																	<label class="onoffswitch-label" for="defer_js">
-																		<span class="onoffswitch-inner"></span>
-																		<span class="onoffswitch-switch"></span>
-																	</label>
-																</div>
-															</div>
-															<div class="col-4 text-right">
-																<strong class="mx-4" id="defer_js_notice"></strong>
 															</div>
 														</div>
 														<h4>Exclude JS Files</h4>
@@ -768,72 +620,22 @@ class DRAdminUI{
 											<h3 class="m-0 p-0">Contact support</h3>
 										</div>
 										<div class="card-body px-5 pt-5">
-											<form>
-												<div class="form-group">
-													<label for="name">Full Name</label>
-													<input type="text" class="form-control" id="name" placeholder="John Doe">
-												</div>
-												<div class="form-group">
-													<label for="email">Email address</label>
-													<input type="email" class="form-control" id="email" placeholder="name@example.com">
-												</div>
-												<div class="form-group">
-													<label for="message">Message</label>
-													<textarea placeholder="Type message here" class="form-control" id="message" rows="3"></textarea>
-												</div>
-											</form>
+											<div class="form-group">
+												<label for="name">Full Name</label>
+												<input type="text" class="form-control" id="dr_contact_name" placeholder="John Doe">
+											</div>
+											<div class="form-group">
+												<label for="email">Email address</label>
+												<input type="email" class="form-control" id="dr_contact_email" placeholder="name@example.com">
+											</div>
+											<div class="form-group">
+												<label for="message">Message</label>
+												<textarea placeholder="Type message here" class="form-control" id="dr_contact_message" rows="3"></textarea>
+											</div>
 										</div>
 										<div class="card-footer px-5 text-right" style="display: initial !important;">
-											<button type="button" class="btn btn-primary">Submit</button>
-										</div>
-									</div>
-								</div>
-								<div class="tab-pane <?php echo $this->drActivelink('donate'); ?>" id="donate">
-									<div class="info">
-										<div class="icon icon-primary">
-											<i class="material-icons">money</i>
-										</div>
-										<h4 class="info-title">Donations</h4>
-										<p>
-											Lorem ipsum donate some sum. Quo an dicit facete. 
-											At placerat scriptorem deterruisset quo. 
-											Ea probo invidunt eloquents, Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-										</p>
-										<div class="form-check form-check-radio form-check-inline">
-											<label class="form-check-label">
-												<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1"> $1
-												<span class="circle">
-													<span class="check"></span>
-												</span>
-											</label>
-										</div>
-										<div class="form-check form-check-radio form-check-inline">
-											<label class="form-check-label">
-												<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="5" checked> $5
-												<span class="circle">
-													<span class="check"></span>
-												</span>
-											</label>
-										</div>
-										<div class="form-check form-check-radio form-check-inline">
-											<label class="form-check-label">
-												<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="10"> $10
-												<span class="circle">
-													<span class="check"></span>
-												</span>
-											</label>
-										</div>
-										<div class="form-check form-check-radio form-check-inline">
-											<label class="form-check-label">
-												<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="20"> $20
-												<span class="circle">
-													<span class="check"></span>
-												</span>
-											</label>
-										</div>
-										<hr>
-										<div class="text-right">
-											<button type="button" class="btn btn-primary">Make Donation</button>
+											<strong id="dr_sending_message" style="float:left; margin-top:15px;"></strong>
+											<button onclick="contactSupport('dr_sending_message')" type="button" class="btn btn-primary">Submit</button>
 										</div>
 									</div>
 								</div>
