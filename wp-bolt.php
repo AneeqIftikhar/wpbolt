@@ -208,7 +208,7 @@ function drFooterScript(){
     		dr_notice.classList.remove("text-success");
     		dr_notice.innerHTML = "Saving...";
   	
-	    	var form = jQuery("#dr_settings_form")[0];
+	    	var form = document.querySelector("#dr_settings_form");
 	    	var data = {};
 	    	for(var i=0; i< form.length; i++){
 				if(form[i].type=="checkbox"){
@@ -224,34 +224,59 @@ function drFooterScript(){
 				if(id == 'basic_minify_js_notice'){
 					if(data['basic_minify_js'] == 0){
 						data['basic_minify_js'] = 0;
-						jQuery('#advance_minify_js').prop('checked', false);
+						document.querySelector('#advance_minify_js').checked =  false;
 					}
 				}
 
 				if(id == 'basic_minify_css_notice'){
 					if(data['basic_minify_css'] == 0){
 						data['advance_minify_css'] = 0;
-						jQuery('#advance_minify_css').prop('checked', false);
+						document.querySelector('#advance_minify_css').checked =  false;
 					}
 				}
 				
 				if(id == 'advance_minify_css_notice'){
 					if(data['advance_minify_css'] == 1){
 						data['basic_minify_css'] = 1;
-						jQuery('#basic_minify_css').prop('checked', true);
+						document.querySelector('#basic_minify_css').checked =  true;
 					}
 				}
 				
 				if(id == 'advance_minify_js_notice'){
 					if(data['advance_minify_js'] == 1){
 						data['basic_minify_js'] = 1;
-						jQuery('#basic_minify_js').prop('checked', true);
+						document.querySelector('#basic_minify_js').checked =  true;
 					}
 				}
 	    	}
-	        data["action"] = 'dr_set_options';
-	        jQuery.post('<?php echo admin_url( 'admin-ajax.php' ); ?>', data, drResponse);        
+	        data["action"] = 'dr_set_options'; 
+			makeServerPost("<?php echo admin_url( 'admin-ajax.php' ); ?>", data);       
 	    };
+
+		function param(object) {
+			var encodedString = '';
+			for (var prop in object) {
+				if (object.hasOwnProperty(prop)) {
+					if (encodedString.length > 0) {
+						encodedString += '&';
+					}
+					encodedString += encodeURI(prop + '=' + object[prop]);
+				}
+			}
+			return encodedString;
+		}
+
+		function makeServerPost(url, data){
+			var http = new XMLHttpRequest();
+			http.open('POST', url, true);
+			http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+			http.onreadystatechange = function() {
+				if(http.readyState == 4 && http.status == 200) {
+					drResponse(http.responseText, "success", null);
+				}
+			}
+			http.send(param(data));
+		}
 
 	    function drResponse(a, b, c){
 	    	if(b == "success"){
@@ -276,11 +301,10 @@ function drFooterScript(){
 	    		dr_notice.innerHTML = "Failed.";
 	    	}
 			dr_hide_notices.push(dr_notice_id);
-	    	console.log(response);
 			setTimeout(
 				function(){
 					var id = dr_hide_notices.splice(0, 1);
-					jQuery('#'+id).hide(100);
+					document.querySelector('#'+id).style.display = 'none';
 				}, 3000
 			);
 	    }
@@ -301,11 +325,15 @@ function drMinifyContent($html){
 	if($dr_options->checked("remove_css_queries")){
 		$html = $drMinification->removeQueriesCss($html);
 	}
+	if($dr_options->checked("minify_local_css")){
+		$drCombineCss = false;
+		$drScope = "local";
+		$html = $drMinification->minifyLinkedCss($html, $drCombineCss, $drScope);
+	}
 	if($dr_options->checked("minify_external_css")){
 		$drCombineCss = false;
-		$drDeferCss = false;
-		$drNoQueries = false;
-		$html = $drMinification->minifyExternalCss($html, $drCombineCss, $drDeferCss, $drNoQueries);
+		$drScope = "external";
+		$html = $drMinification->minifyLinkedCss($html, $drCombineCss, $drScope);
 	}
 	if($dr_options->checked("minify_inline_css")){
 		$html = $drMinification->minifyInlineCss($html);
@@ -361,7 +389,36 @@ add_action('shutdown', function() {
 	}else{
 		echo $final;
 	}
+	//after_files_included();
 }, 0);
+
+
+function get_linked_files() {
+
+    $result = [];
+    $result['scripts'] = [];
+    $result['styles'] = [];
+
+    // Print all loaded Scripts
+    global $wp_scripts;
+    foreach( $wp_scripts->queue as $script ) :
+       $result['scripts'][] =  $wp_scripts->registered[$script]->src . ";";
+    endforeach;
+
+    // Print all loaded Styles (CSS)
+    global $wp_styles;
+    foreach( $wp_styles->queue as $style ) :
+       $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
+    endforeach;
+    return $result;
+}
+
+//add_action( 'wp_head', 'after_files_included');
+
+function after_files_included(){
+	$allscripts_and_styles = get_linked_files();
+	echo "<script>var included_files = '".json_encode($allscripts_and_styles)."';</script>";
+}
 
 
 include_once "classes/DROptimizeEmoji.php";
