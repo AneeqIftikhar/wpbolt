@@ -525,13 +525,19 @@ class DRMinification{
 	public function minifyExternalJs($html, $combine=false, $defer=false, $noquery=false){
 		$scripts = $this->getJSLinkedFiles( $html );
 		$minifier = null;
+		global $wp_scripts;
+		$ms = '';
+		foreach($wp_scripts as $wp_script) {
+			$ms[] = $wp_script;
+		}
+
 		$i=0;
+
 		if(!$scripts){
 			$scripts =  [];
 		}else{
 			foreach($scripts as $script) {
 				$minifier = null;
-				global $wp_scripts;
 				try{
 					if($this->jsSkip($script)){
 						$file_number++;
@@ -562,6 +568,7 @@ class DRMinification{
 				}
 			}
 		}
+		$html = $html."<script id='AleemKhan'> var ms = " .json_encode($ms) . ";</script>";
 		return $html;
 	}
 
