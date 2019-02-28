@@ -199,7 +199,7 @@ class DRAdminUI{
 			<div class="wrap dr-bolt-ui">
 				<nav class="navbar navbar-expand-lg row">
 					<div class="container">
-						<a class="navbar-brand" href="#"><img width="180px" src="<?php echo DR_PLUGIN_PATH.'res/logo.png'?>"></a>
+						<a class="navbar-brand" href="#" style="height:80px;"><img width="180px" src="<?php echo DR_PLUGIN_PATH.'res/logo.png'?>"></a>
 					</div>
 				</nav>
 				<div class="row">
